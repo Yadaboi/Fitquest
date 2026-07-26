@@ -1,6 +1,21 @@
-import type { HistoryWorkout } from '../hooks/useWorkoutHistory'
+// Achievement definitions and pure computation, shared between the Vite
+// client (progress bars on the Profile page) and the complete-workout edge
+// function (persisting unlock records). Deliberately depends on nothing but
+// a minimal structural workout shape so it can run in either environment.
 
 export const TIER_NAMES = ['Bronze', 'Silver', 'Gold', 'Platinum'] as const
+
+export interface AchievementSet {
+  exercise_id: string
+  weight: number
+  reps: number
+  is_pr: boolean
+}
+
+export interface AchievementWorkout {
+  id: string
+  sets: AchievementSet[]
+}
 
 export interface AchievementStats {
   totalWorkouts: number
@@ -50,7 +65,7 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
   },
 ]
 
-export function computeStats(completedWorkouts: HistoryWorkout[]): AchievementStats {
+export function computeStats(completedWorkouts: AchievementWorkout[]): AchievementStats {
   const allSets = completedWorkouts.flatMap((w) => w.sets)
   return {
     totalWorkouts: completedWorkouts.length,

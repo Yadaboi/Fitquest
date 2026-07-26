@@ -3,14 +3,16 @@ import {
   getAchievementProgress,
   type AchievementDefinition,
   type AchievementStats,
-} from '../../lib/achievements'
+} from '../../../shared/achievements'
 
 export function AchievementCard({
   definition,
   stats,
+  unlockedAt,
 }: {
   definition: AchievementDefinition
   stats: AchievementStats
+  unlockedAt?: string
 }) {
   const { tierIndex, value, nextThreshold } = getAchievementProgress(definition, stats)
   const currentTierName = tierIndex >= 0 ? TIER_NAMES[tierIndex] : null
@@ -47,6 +49,11 @@ export function AchievementCard({
       <p className="mt-1 text-xs text-[var(--color-text-faint)]">
         {nextThreshold ? `${value} / ${nextThreshold} to next tier` : `${value} — maxed out`}
       </p>
+      {unlockedAt && (
+        <p className="mt-1 text-xs text-[var(--color-celebration)]">
+          Unlocked {new Date(unlockedAt).toLocaleDateString()}
+        </p>
+      )}
     </div>
   )
 }

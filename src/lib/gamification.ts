@@ -1,7 +1,7 @@
-// XP economy (Phase 2): flat per-set XP, a completion bonus, and a bigger PR spike.
-export const XP_PER_SET = 10
-export const COMPLETION_BONUS = 50
-export const PR_BONUS = 100
+// XP reward amounts live in shared/gamification-constants.ts (imported
+// directly by callers that need them) so the client and the
+// complete-workout edge function never drift apart. This file only holds
+// the client-only display concerns: the level curve and rank titles.
 
 // Accelerating level curve: fast early levels, longer grind later.
 function xpRequiredForLevel(level: number): number {

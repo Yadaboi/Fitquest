@@ -3,9 +3,12 @@ import { useAuth } from '../../context/AuthContext'
 import { usePlayerStats } from '../../hooks/usePlayerStats'
 import { useProfile, useUpdateProfile } from '../../hooks/useProfile'
 import { useWorkoutHistory } from '../../hooks/useWorkoutHistory'
+import { useAchievements } from '../../hooks/useAchievements'
+import { useXpEvents } from '../../hooks/useXpEvents'
 import { getLevelProgress, getRankTitle } from '../../lib/gamification'
-import { ACHIEVEMENT_DEFINITIONS, computeStats } from '../../lib/achievements'
+import { ACHIEVEMENT_DEFINITIONS, computeStats } from '../../../shared/achievements'
 import { AchievementCard } from './AchievementCard'
+import { RecentActivity } from './RecentActivity'
 import { Stepper } from '../../components/ui/Stepper'
 import { supabase } from '../../lib/supabase'
 
@@ -16,6 +19,8 @@ export function ProfilePage() {
   const { data: stats } = usePlayerStats(userId)
   const { data: profile } = useProfile(userId)
   const { data: completedWorkouts } = useWorkoutHistory(userId)
+  const { data: unlockedAchievements } = useAchievements(userId)
+  const { data: xpEvents } = useXpEvents(userId)
   const updateProfile = useUpdateProfile(userId)
 
   const totalXp = stats?.total_xp ?? 0
@@ -29,6 +34,10 @@ export function ProfilePage() {
   const achievementStats = useMemo(
     () => computeStats(completedWorkouts ?? []),
     [completedWorkouts],
+  )
+  const unlockedAtByAchievement = useMemo(
+    () => new Map((unlockedAchievements ?? []).map((row) => [row.achievement_id, row.unlocked_at])),
+    [unlockedAchievements],
   )
 
   function handleWeeklyGoalChange(nextGoal: number) {
@@ -59,8 +68,18 @@ export function ProfilePage() {
       <section className="flex flex-col gap-3">
         <p className="text-xs font-medium text-[var(--color-text-faint)]">Achievements</p>
         {ACHIEVEMENT_DEFINITIONS.map((definition) => (
-          <AchievementCard key={definition.id} definition={definition} stats={achievementStats} />
+          <AchievementCard
+            key={definition.id}
+            definition={definition}
+            stats={achievementStats}
+            unlockedAt={unlockedAtByAchievement.get(definition.id)}
+          />
         ))}
+      </section>
+
+      <section className="flex flex-col gap-3 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+        <p className="text-xs font-medium text-[var(--color-text-faint)]">Recent activity</p>
+        <RecentActivity events={xpEvents ?? []} />
       </section>
 
       <section className="flex flex-col gap-4 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">

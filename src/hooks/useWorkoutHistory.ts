@@ -1,17 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '../lib/supabase'
+import type { SetRow, WorkoutRow } from '../types/supabase'
 
-export interface HistorySet {
-  id: string
-  exercise_id: string
-  weight: number
-  reps: number
-  is_pr: boolean
-}
+export type HistorySet = Pick<SetRow, 'id' | 'exercise_id' | 'weight' | 'reps' | 'is_pr'>
 
 export interface HistoryWorkout {
-  id: string
-  date: string
+  id: WorkoutRow['id']
+  date: WorkoutRow['date']
   sets: HistorySet[]
 }
 

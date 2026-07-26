@@ -3,7 +3,10 @@ import { AnimatePresence, motion } from 'framer-motion'
 export interface CelebrationData {
   title: string
   subtitle: string
-  amount: number
+  // Omitted for moments with no direct XP payout (e.g. a shield or an
+  // achievement unlock) — the amount line is skipped rather than showing
+  // a misleading "+0 XP".
+  amount?: number
 }
 
 // The distinctly bigger moment (Phase 3): PRs, quest completions, level-ups.
@@ -34,9 +37,11 @@ export function Celebration({
           >
             <p className="text-sm font-medium text-[var(--color-celebration)]">{data.title}</p>
             <p className="mt-1 text-lg font-semibold text-[var(--color-text)]">{data.subtitle}</p>
-            <p className="mt-3 text-2xl font-bold text-[var(--color-celebration)]">
-              +{data.amount} XP
-            </p>
+            {data.amount !== undefined && (
+              <p className="mt-3 text-2xl font-bold text-[var(--color-celebration)]">
+                +{data.amount} XP
+              </p>
+            )}
             <button
               type="button"
               onClick={onDismiss}

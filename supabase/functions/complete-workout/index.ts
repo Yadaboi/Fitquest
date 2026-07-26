@@ -4,10 +4,13 @@
 // the service role — a client can never self-report its own XP.
 
 import { createClient } from 'npm:@supabase/supabase-js@2'
-
-const XP_PER_SET = 10
-const COMPLETION_BONUS = 50
-const PR_BONUS = 100
+import { XP_PER_SET, COMPLETION_BONUS, PR_BONUS } from '../../../shared/gamification-constants.ts'
+import {
+  ACHIEVEMENT_DEFINITIONS,
+  computeStats,
+  getAchievementProgress,
+  type AchievementWorkout,
+} from '../../../shared/achievements.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -202,6 +205,58 @@ Deno.serve(async (req) => {
     ]
     await adminClient.from('xp_events').insert(xpEvents)
 
+    // Achievement unlock persistence: recompute tiers from this user's full
+    // completed-workout history (the workout just finished above is already
+    // included, since its completed_at was written earlier in this request)
+    // and persist any tier that's newly been crossed. Reads use the
+    // user-scoped client (RLS already allows selecting one's own data);
+    // only the upsert needs the service role, since clients have no write
+    // policy on user_achievements — same anti-cheat boundary as player_stats.
+    const { data: achievementWorkouts } = await userClient
+      .from('workouts')
+      .select('id, sets(exercise_id, weight, reps, is_pr)')
+      .eq('user_id', user.id)
+      .not('completed_at', 'is', null)
+
+    const achievementStats = computeStats(
+      (achievementWorkouts ?? []) as AchievementWorkout[],
+    )
+
+    const { data: existingUnlocks } = await userClient
+      .from('user_achievements')
+      .select('achievement_id, tier_index')
+      .eq('user_id', user.id)
+
+    const existingTierByAchievement = new Map<string, number>(
+      (existingUnlocks ?? []).map((row) => [row.achievement_id, row.tier_index]),
+    )
+
+    const unlockedAchievements: { id: string; tier: number }[] = []
+    const achievementUpserts: {
+      user_id: string
+      achievement_id: string
+      tier_index: number
+    }[] = []
+
+    for (const definition of ACHIEVEMENT_DEFINITIONS) {
+      const { tierIndex } = getAchievementProgress(definition, achievementStats)
+      const previousTier = existingTierByAchievement.get(definition.id) ?? -1
+      if (tierIndex > previousTier) {
+        unlockedAchievements.push({ id: definition.id, tier: tierIndex })
+        achievementUpserts.push({
+          user_id: user.id,
+          achievement_id: definition.id,
+          tier_index: tierIndex,
+        })
+      }
+    }
+
+    if (achievementUpserts.length > 0) {
+      await adminClient
+        .from('user_achievements')
+        .upsert(achievementUpserts, { onConflict: 'user_id,achievement_id' })
+    }
+
     return new Response(
       JSON.stringify({
         xpAwarded,
@@ -209,6 +264,7 @@ Deno.serve(async (req) => {
         newTotalXp,
         streakWeeks,
         shieldAwarded: allQuestsComplete,
+        unlockedAchievements,
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
     )

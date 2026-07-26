@@ -1,3 +1,6 @@
+// In-session UI shapes for the workout currently being logged (camelCase,
+// not yet persisted). DB row shapes live in types/supabase.ts instead.
+
 export interface Exercise {
   id: string
   name: string

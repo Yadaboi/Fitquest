@@ -1,16 +1,16 @@
-export type ExperienceLevel = 'new' | 'returning'
+// DB row shapes, derived from the generated Database type (src/types/database.ts).
+// For in-session UI shapes (the active workout being logged before it's
+// persisted), see types/domain.ts instead — that boundary is intentional.
+import type { Database } from './database'
 
-export interface ProfileRow {
-  id: string
-  experience_level: ExperienceLevel | null
-  weekly_goal: number
-  created_at: string
-}
+export type ExperienceLevel = NonNullable<
+  Database['public']['Tables']['profiles']['Row']['experience_level']
+>
 
-export interface PlayerStatsRow {
-  user_id: string
-  total_xp: number
-  streak_weeks: number
-  shield_count: number
-  updated_at: string
-}
+export type ProfileRow = Database['public']['Tables']['profiles']['Row']
+export type PlayerStatsRow = Database['public']['Tables']['player_stats']['Row']
+export type ExerciseRow = Database['public']['Tables']['exercises']['Row']
+export type WorkoutRow = Database['public']['Tables']['workouts']['Row']
+export type SetRow = Database['public']['Tables']['sets']['Row']
+export type XpEventRow = Database['public']['Tables']['xp_events']['Row']
+export type UserAchievementRow = Database['public']['Tables']['user_achievements']['Row']

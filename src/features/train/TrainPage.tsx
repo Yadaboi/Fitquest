@@ -4,8 +4,10 @@ import { useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import { getTodaysWorkout } from '../../lib/mockData'
-import { XP_PER_SET, PR_BONUS } from '../../lib/gamification'
+import { XP_PER_SET, PR_BONUS } from '../../../shared/gamification-constants'
+import { ACHIEVEMENT_DEFINITIONS, TIER_NAMES } from '../../../shared/achievements'
 import { useWorkoutHistory, getLastPerformanceByExercise } from '../../hooks/useWorkoutHistory'
+import { DEFAULT_SESSION_QUESTS } from '../../lib/quests'
 import { ExerciseCard } from './ExerciseCard'
 import { XpTickStack, type XpTick } from '../../components/ui/XpTickStack'
 import { Celebration, type CelebrationData } from '../../components/ui/Celebration'
@@ -28,13 +30,14 @@ export function TrainPage() {
   const [workoutId, setWorkoutId] = useState<string | null>(null)
   const [loggedByExercise, setLoggedByExercise] = useState<Record<string, LoggedSet[]>>({})
   const [ticks, setTicks] = useState<XpTick[]>([])
-  const [celebration, setCelebration] = useState<CelebrationData | null>(null)
+  // A finished workout can trigger several celebration-worthy moments at
+  // once (completion, a shield, one or more achievement unlocks) — queued
+  // so they're shown one at a time instead of only the last one winning.
+  const [celebrationQueue, setCelebrationQueue] = useState<CelebrationData[]>([])
+  const [navigateHomeAfterCelebrations, setNavigateHomeAfterCelebrations] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isFinishing, setIsFinishing] = useState(false)
-  const [quests, setQuests] = useState<SessionQuest[]>([
-    { id: 'all-exercises', title: 'Complete every exercise', isComplete: false },
-    { id: 'beat-best', title: 'Beat a previous best on any lift', isComplete: false },
-  ])
+  const [quests, setQuests] = useState<SessionQuest[]>(DEFAULT_SESSION_QUESTS)
 
   const totalLoggedSets = Object.values(loggedByExercise).reduce(
     (sum, sets) => sum + sets.length,
@@ -47,6 +50,10 @@ export function TrainPage() {
     window.setTimeout(() => {
       setTicks((prev) => prev.filter((t) => t.id !== id))
     }, 700)
+  }
+
+  function queueCelebration(data: CelebrationData) {
+    setCelebrationQueue((prev) => [...prev, data])
   }
 
   function updateQuestProgress(nextLoggedByExercise: Record<string, LoggedSet[]>, hitPr: boolean) {
@@ -102,7 +109,7 @@ export function TrainPage() {
       pushTick(XP_PER_SET)
 
       if (isPr) {
-        setCelebration({
+        queueCelebration({
           title: 'New Personal Record',
           subtitle: workoutExercise?.exercise.name ?? '',
           amount: PR_BONUS,
@@ -135,24 +142,47 @@ export function TrainPage() {
 
     queryClient.invalidateQueries({ queryKey: ['player-stats', userId] })
     queryClient.invalidateQueries({ queryKey: ['workout-history', userId] })
+    queryClient.invalidateQueries({ queryKey: ['achievements', userId] })
 
-    setCelebration({
-      title: 'Workout Complete',
-      subtitle: `${totalLoggedSets} sets logged`,
-      amount: data.xpAwarded,
-    })
+    const newCelebrations: CelebrationData[] = [
+      {
+        title: 'Workout Complete',
+        subtitle: `${totalLoggedSets} sets logged`,
+        amount: data.xpAwarded,
+      },
+    ]
+
+    if (data.shieldAwarded) {
+      newCelebrations.push({
+        title: 'Shield Earned',
+        subtitle: 'Your streak is protected if you miss a week',
+      })
+    }
+
+    const unlocked = (data.unlockedAchievements ?? []) as { id: string; tier: number }[]
+    for (const unlock of unlocked) {
+      const definition = ACHIEVEMENT_DEFINITIONS.find((d) => d.id === unlock.id)
+      if (!definition) continue
+      newCelebrations.push({
+        title: `${definition.title}: ${TIER_NAMES[unlock.tier]}`,
+        subtitle: definition.description,
+      })
+    }
+
+    setNavigateHomeAfterCelebrations(true)
+    setCelebrationQueue(newCelebrations)
   }
 
   function handleDismissCelebration() {
-    const wasCompletion = celebration?.title === 'Workout Complete'
-    setCelebration(null)
-    if (wasCompletion) navigate('/')
+    const remaining = celebrationQueue.slice(1)
+    setCelebrationQueue(remaining)
+    if (remaining.length === 0 && navigateHomeAfterCelebrations) navigate('/')
   }
 
   return (
     <div className="flex flex-col gap-4">
       <XpTickStack ticks={ticks} />
-      <Celebration data={celebration} onDismiss={handleDismissCelebration} />
+      <Celebration data={celebrationQueue[0] ?? null} onDismiss={handleDismissCelebration} />
 
       <header>
         <h1 className="text-xl font-semibold text-[var(--color-text)]">Full Body — Day 1</h1>
