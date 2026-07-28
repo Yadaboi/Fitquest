@@ -143,6 +143,7 @@ export function TrainPage() {
     queryClient.invalidateQueries({ queryKey: ['player-stats', userId] })
     queryClient.invalidateQueries({ queryKey: ['workout-history', userId] })
     queryClient.invalidateQueries({ queryKey: ['achievements', userId] })
+    queryClient.invalidateQueries({ queryKey: ['xp-events', userId] })
 
     const newCelebrations: CelebrationData[] = [
       {
