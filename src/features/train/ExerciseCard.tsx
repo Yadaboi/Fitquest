@@ -5,17 +5,30 @@ interface ExerciseCardProps {
   workoutExercise: WorkoutExercise
   loggedSets: LoggedSet[]
   onLogSet: (weight: number, reps: number) => void
+  isFocus?: boolean
 }
 
-export function ExerciseCard({ workoutExercise, loggedSets, onLogSet }: ExerciseCardProps) {
+export function ExerciseCard({ workoutExercise, loggedSets, onLogSet, isFocus }: ExerciseCardProps) {
   const { exercise, targetSets, lastPerformance } = workoutExercise
   const isTargetMet = loggedSets.length >= targetSets
 
   return (
-    <section className="flex flex-col gap-3 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+    <section
+      className={
+        'flex flex-col gap-3 rounded-2xl border bg-[var(--color-surface)] p-4 ' +
+        (isFocus ? 'border-[var(--color-accent)]' : 'border-[var(--color-border)]')
+      }
+    >
       <div className="flex items-start justify-between">
         <div>
-          <h2 className="text-base font-semibold text-[var(--color-text)]">{exercise.name}</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-base font-semibold text-[var(--color-text)]">{exercise.name}</h2>
+            {isFocus && (
+              <span className="whitespace-nowrap rounded-full bg-[var(--color-accent)] px-2 py-0.5 text-[10px] font-medium text-[var(--color-accent-foreground)]">
+                Focus
+              </span>
+            )}
+          </div>
           <p className="mt-0.5 text-xs text-[var(--color-text-muted)]">{exercise.cue}</p>
         </div>
         <span className="whitespace-nowrap rounded-full bg-[var(--color-surface-2)] px-2 py-1 text-xs text-[var(--color-text-faint)]">

@@ -1,14 +1,20 @@
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { usePlayerStats } from '../../hooks/usePlayerStats'
+import { useWorkoutHistory } from '../../hooks/useWorkoutHistory'
 import { getLevelProgress, getRankTitle } from '../../lib/gamification'
+import { getFocusRecommendation } from '../../lib/recommendation'
 import { DEFAULT_SESSION_QUESTS } from '../../lib/quests'
+import { RecommendationBanner } from '../../components/ui/RecommendationBanner'
 
 // Hero: today's workout CTA. Status strip: level/XP, streak — glanceable, not competing for attention.
 export function HomePage() {
   const navigate = useNavigate()
   const { session } = useAuth()
-  const { data: stats } = usePlayerStats(session!.user.id)
+  const userId = session!.user.id
+  const { data: stats } = usePlayerStats(userId)
+  const { data: history } = useWorkoutHistory(userId)
+  const recommendation = getFocusRecommendation(history ?? [])
 
   const totalXp = stats?.total_xp ?? 0
   const streakWeeks = stats?.streak_weeks ?? 0
@@ -46,6 +52,8 @@ export function HomePage() {
           </div>
         </div>
       </header>
+
+      <RecommendationBanner recommendation={recommendation} />
 
       <section className="rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
         <p className="text-sm text-[var(--color-text-muted)]">Today&apos;s workout</p>

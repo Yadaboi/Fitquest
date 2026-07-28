@@ -35,13 +35,16 @@ export const EXERCISE_LIBRARY: Exercise[] = [
 
 // Stand-in for the "smart daily suggestion" logic (Phase 2) — the exercise
 // selection itself is still a fixed rotation, but lastPerformance now comes
-// from real workout history once the caller has it.
+// from real workout history once the caller has it, and an overdue category
+// (see lib/recommendation.ts) gets an extra target set so the recommendation
+// actually changes the session instead of just being a comment on it.
 export function getTodaysWorkout(
   lastPerformanceByExercise: Record<string, { weight: number; reps: number }> = {},
+  focusCategory?: Exercise['category'],
 ): WorkoutExercise[] {
   return EXERCISE_LIBRARY.map((exercise) => ({
     exercise,
-    targetSets: exercise.isBodyweight ? 3 : 4,
+    targetSets: (exercise.isBodyweight ? 3 : 4) + (exercise.category === focusCategory ? 1 : 0),
     lastPerformance: lastPerformanceByExercise[exercise.id] ?? null,
   }))
 }

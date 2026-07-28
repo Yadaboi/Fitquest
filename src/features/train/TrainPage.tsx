@@ -7,10 +7,12 @@ import { getTodaysWorkout } from '../../lib/mockData'
 import { XP_PER_SET, PR_BONUS } from '../../../shared/gamification-constants'
 import { ACHIEVEMENT_DEFINITIONS, TIER_NAMES } from '../../../shared/achievements'
 import { useWorkoutHistory, getLastPerformanceByExercise } from '../../hooks/useWorkoutHistory'
+import { getFocusRecommendation } from '../../lib/recommendation'
 import { DEFAULT_SESSION_QUESTS } from '../../lib/quests'
 import { ExerciseCard } from './ExerciseCard'
 import { XpTickStack, type XpTick } from '../../components/ui/XpTickStack'
 import { Celebration, type CelebrationData } from '../../components/ui/Celebration'
+import { RecommendationBanner } from '../../components/ui/RecommendationBanner'
 import type { LoggedSet, SessionQuest } from '../../types/domain'
 
 let tickIdCounter = 0
@@ -22,9 +24,10 @@ export function TrainPage() {
   const userId = session!.user.id
 
   const { data: history } = useWorkoutHistory(userId)
+  const recommendation = useMemo(() => getFocusRecommendation(history ?? []), [history])
   const workout = useMemo(
-    () => getTodaysWorkout(getLastPerformanceByExercise(history ?? [])),
-    [history],
+    () => getTodaysWorkout(getLastPerformanceByExercise(history ?? []), recommendation?.category),
+    [history, recommendation],
   )
 
   const [workoutId, setWorkoutId] = useState<string | null>(null)
@@ -196,6 +199,8 @@ export function TrainPage() {
         </p>
       )}
 
+      <RecommendationBanner recommendation={recommendation} />
+
       <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
         <p className="mb-2 text-xs font-medium text-[var(--color-text-faint)]">Session quests</p>
         <ul className="flex flex-col gap-1.5">
@@ -222,6 +227,7 @@ export function TrainPage() {
           workoutExercise={workoutExercise}
           loggedSets={loggedByExercise[workoutExercise.exercise.id] ?? []}
           onLogSet={(weight, reps) => handleLogSet(workoutExercise.exercise.id, weight, reps)}
+          isFocus={workoutExercise.exercise.category === recommendation?.category}
         />
       ))}
 
