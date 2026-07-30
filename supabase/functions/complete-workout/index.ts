@@ -4,13 +4,20 @@
 // the service role — a client can never self-report its own XP.
 
 import { createClient } from 'npm:@supabase/supabase-js@2'
-import { XP_PER_SET, COMPLETION_BONUS, PR_BONUS } from '../../../shared/gamification-constants.ts'
+import {
+  XP_PER_SET,
+  COMPLETION_BONUS,
+  PR_BONUS,
+  QUEST_MIN_DISTINCT_EXERCISES,
+  QUEST_MIN_CARDIO_MINUTES,
+} from '../../../shared/gamification-constants.ts'
 import {
   ACHIEVEMENT_DEFINITIONS,
   computeStats,
   getAchievementProgress,
   type AchievementWorkout,
 } from '../../../shared/achievements.ts'
+import { normalizeExerciseName } from '../../../shared/exercise-name.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -19,9 +26,11 @@ const corsHeaders = {
 
 interface SetRow {
   id: string
-  exercise_id: string
-  weight: number
-  reps: number
+  exercise_name: string
+  entry_type: 'strength' | 'cardio'
+  weight: number | null
+  reps: number | null
+  duration_minutes: number | null
 }
 
 function isoWeekKey(date: Date): string {
@@ -73,7 +82,7 @@ Deno.serve(async (req) => {
     // caller's own workout.
     const { data: workout, error: workoutError } = await userClient
       .from('workouts')
-      .select('id, user_id')
+      .select('id, user_id, day_type')
       .eq('id', workout_id)
       .single()
     if (workoutError || !workout) {
@@ -85,7 +94,7 @@ Deno.serve(async (req) => {
 
     const { data: workoutSets, error: setsError } = await userClient
       .from('sets')
-      .select('id, exercise_id, weight, reps')
+      .select('id, exercise_name, entry_type, weight, reps, duration_minutes')
       .eq('workout_id', workout_id)
     if (setsError || !workoutSets || workoutSets.length === 0) {
       return new Response(JSON.stringify({ error: 'No sets logged for this workout' }), {
@@ -100,21 +109,46 @@ Deno.serve(async (req) => {
 
     const { data: priorSets } = await adminClient
       .from('sets')
-      .select('exercise_id, weight, workouts!inner(user_id)')
+      .select('exercise_name, entry_type, weight, duration_minutes, workouts!inner(user_id)')
       .eq('workouts.user_id', user.id)
       .neq('workout_id', workout_id)
 
-    const previousMaxByExercise = new Map<string, number>()
-    for (const row of (priorSets ?? []) as { exercise_id: string; weight: number }[]) {
-      const current = previousMaxByExercise.get(row.exercise_id) ?? 0
-      if (row.weight > current) previousMaxByExercise.set(row.exercise_id, row.weight)
+    // PR detection, split by entry type and keyed by normalized name so the
+    // same lift/activity logged with different casing/whitespace still
+    // matches across sessions. A strength PR beats a prior max weight; a
+    // cardio PR beats a prior max duration for that same activity — "longest
+    // run yet" is exactly as real a personal best as "heaviest squat yet."
+    const previousMaxWeightByName = new Map<string, number>()
+    const previousMaxDurationByName = new Map<string, number>()
+    for (const row of (priorSets ?? []) as {
+      exercise_name: string
+      entry_type: 'strength' | 'cardio'
+      weight: number | null
+      duration_minutes: number | null
+    }[]) {
+      const key = normalizeExerciseName(row.exercise_name)
+      if (row.entry_type === 'strength' && row.weight != null) {
+        const current = previousMaxWeightByName.get(key) ?? 0
+        if (row.weight > current) previousMaxWeightByName.set(key, row.weight)
+      } else if (row.entry_type === 'cardio' && row.duration_minutes != null) {
+        const current = previousMaxDurationByName.get(key) ?? 0
+        if (row.duration_minutes > current) previousMaxDurationByName.set(key, row.duration_minutes)
+      }
     }
 
     const prSetIds: string[] = []
     for (const set of workoutSets as SetRow[]) {
-      const previousMax = previousMaxByExercise.get(set.exercise_id) ?? 0
-      if (set.weight > 0 && previousMax > 0 && set.weight > previousMax) {
-        prSetIds.push(set.id)
+      const key = normalizeExerciseName(set.exercise_name)
+      if (set.entry_type === 'strength' && set.weight != null) {
+        const previousMax = previousMaxWeightByName.get(key) ?? 0
+        if (set.weight > 0 && previousMax > 0 && set.weight > previousMax) {
+          prSetIds.push(set.id)
+        }
+      } else if (set.entry_type === 'cardio' && set.duration_minutes != null) {
+        const previousMax = previousMaxDurationByName.get(key) ?? 0
+        if (previousMax > 0 && set.duration_minutes > previousMax) {
+          prSetIds.push(set.id)
+        }
       }
     }
 
@@ -124,15 +158,23 @@ Deno.serve(async (req) => {
     const xpFromPrs = prCount * PR_BONUS
     const xpAwarded = xpFromSets + xpFromPrs + COMPLETION_BONUS
 
-    // Quest recomputation (server-side, not trusted from the client):
-    // "try every exercise in the library" and "beat a previous best."
-    const { data: allExercises } = await adminClient.from('exercises').select('id')
-    const exerciseIdsInWorkout = new Set(workoutSets.map((s) => s.exercise_id))
-    const allExercisesCovered = (allExercises ?? []).every((e) =>
-      exerciseIdsInWorkout.has(e.id),
-    )
+    // Quest recomputation (server-side, not trusted from the client). There's
+    // no fixed catalog to "complete every exercise" from anymore — a cardio
+    // day asks for a minimum duration instead, since requiring several
+    // distinct exercises on a single-activity cardio day would be an unfair
+    // bar.
+    const isCardioDay = workout.day_type === 'cardio'
+    const questProgressComplete = isCardioDay
+      ? workoutSets
+          .filter((s) => s.entry_type === 'cardio')
+          .reduce((sum, s) => sum + (s.duration_minutes ?? 0), 0) >= QUEST_MIN_CARDIO_MINUTES
+      : new Set(
+          workoutSets
+            .filter((s) => s.entry_type === 'strength')
+            .map((s) => normalizeExerciseName(s.exercise_name)),
+        ).size >= QUEST_MIN_DISTINCT_EXERCISES
     const hitPr = prCount > 0
-    const allQuestsComplete = allExercisesCovered && hitPr
+    const allQuestsComplete = questProgressComplete && hitPr
 
     // Streak: consecutive weeks (ending this week) with completed-workout
     // count >= the user's weekly goal. Recomputed fresh each time rather
@@ -214,7 +256,7 @@ Deno.serve(async (req) => {
     // policy on user_achievements — same anti-cheat boundary as player_stats.
     const { data: achievementWorkouts } = await userClient
       .from('workouts')
-      .select('id, sets(exercise_id, weight, reps, is_pr)')
+      .select('id, sets(exercise_name, entry_type, weight, reps, duration_minutes, is_pr)')
       .eq('user_id', user.id)
       .not('completed_at', 'is', null)
 

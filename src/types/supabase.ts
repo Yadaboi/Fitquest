@@ -9,7 +9,6 @@ export type ExperienceLevel = NonNullable<
 
 export type ProfileRow = Database['public']['Tables']['profiles']['Row']
 export type PlayerStatsRow = Database['public']['Tables']['player_stats']['Row']
-export type ExerciseRow = Database['public']['Tables']['exercises']['Row']
 export type WorkoutRow = Database['public']['Tables']['workouts']['Row']
 export type SetRow = Database['public']['Tables']['sets']['Row']
 export type XpEventRow = Database['public']['Tables']['xp_events']['Row']

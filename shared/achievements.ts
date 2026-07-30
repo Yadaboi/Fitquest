@@ -3,12 +3,16 @@
 // function (persisting unlock records). Deliberately depends on nothing but
 // a minimal structural workout shape so it can run in either environment.
 
+import { normalizeExerciseName } from './exercise-name.ts'
+
 export const TIER_NAMES = ['Bronze', 'Silver', 'Gold', 'Platinum'] as const
 
 export interface AchievementSet {
-  exercise_id: string
-  weight: number
-  reps: number
+  exercise_name: string
+  entry_type: 'strength' | 'cardio'
+  weight: number | null
+  reps: number | null
+  duration_minutes: number | null
   is_pr: boolean
 }
 
@@ -60,18 +64,28 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
     id: 'variety',
     title: 'Explorer',
     description: 'Try different exercises',
-    thresholds: [1, 2, 3, 4],
+    thresholds: [3, 8, 15, 25],
     getValue: (s) => s.distinctExercises,
   },
 ]
 
+// Cardio entries deliberately don't feed totalVolume or distinctExercises:
+// duration isn't a weight×reps load (no sound conversion factor), and
+// counting "Running" as exercise variety would dilute what "Explorer" is
+// meant to reward. Cardio still counts toward totalWorkouts and totalPrs
+// (a duration PR is a real PR) — its own consistency is celebrated by the
+// Stats page's day-type tally instead.
 export function computeStats(completedWorkouts: AchievementWorkout[]): AchievementStats {
   const allSets = completedWorkouts.flatMap((w) => w.sets)
+  const strengthSets = allSets.filter((s) => s.entry_type === 'strength')
   return {
     totalWorkouts: completedWorkouts.length,
     totalPrs: allSets.filter((s) => s.is_pr).length,
-    totalVolume: allSets.reduce((sum, s) => sum + (s.weight > 0 ? s.weight * s.reps : s.reps), 0),
-    distinctExercises: new Set(allSets.map((s) => s.exercise_id)).size,
+    totalVolume: strengthSets.reduce(
+      (sum, s) => sum + ((s.weight ?? 0) > 0 ? (s.weight ?? 0) * (s.reps ?? 0) : (s.reps ?? 0)),
+      0,
+    ),
+    distinctExercises: new Set(strengthSets.map((s) => normalizeExerciseName(s.exercise_name))).size,
   }
 }
 

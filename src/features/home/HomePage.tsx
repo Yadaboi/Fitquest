@@ -4,7 +4,7 @@ import { usePlayerStats } from '../../hooks/usePlayerStats'
 import { useWorkoutHistory } from '../../hooks/useWorkoutHistory'
 import { getLevelProgress, getRankTitle } from '../../lib/gamification'
 import { getFocusRecommendation } from '../../lib/recommendation'
-import { DEFAULT_SESSION_QUESTS } from '../../lib/quests'
+import { getSessionQuestsForDayType } from '../../lib/quests'
 import { RecommendationBanner } from '../../components/ui/RecommendationBanner'
 
 // Hero: today's workout CTA. Status strip: level/XP, streak — glanceable, not competing for attention.
@@ -56,10 +56,8 @@ export function HomePage() {
       <RecommendationBanner recommendation={recommendation} />
 
       <section className="rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
-        <p className="text-sm text-[var(--color-text-muted)]">Today&apos;s workout</p>
-        <h1 className="mt-1 text-2xl font-semibold text-[var(--color-text)]">
-          Full Body — Day 1
-        </h1>
+        <p className="text-sm text-[var(--color-text-muted)]">Ready to train?</p>
+        <h1 className="mt-1 text-2xl font-semibold text-[var(--color-text)]">Log today&apos;s workout</h1>
         <button
           type="button"
           onClick={() => navigate('/train')}
@@ -72,7 +70,7 @@ export function HomePage() {
       <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
         <p className="text-xs font-medium text-[var(--color-text-faint)]">Today&apos;s quests</p>
         <ul className="mt-2 flex flex-col gap-1.5">
-          {DEFAULT_SESSION_QUESTS.map((quest) => (
+          {getSessionQuestsForDayType(recommendation?.dayType ?? null).map((quest) => (
             <li key={quest.id} className="text-sm text-[var(--color-text-muted)]">
               • {quest.title}
             </li>

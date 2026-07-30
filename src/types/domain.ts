@@ -1,32 +1,26 @@
 // In-session UI shapes for the workout currently being logged (camelCase,
 // not yet persisted). DB row shapes live in types/supabase.ts instead.
 
-export interface Exercise {
-  id: string
-  name: string
-  category: 'push' | 'pull' | 'legs' | 'core'
-  cue: string
-  isBodyweight: boolean
-}
+export type DayType = 'upper' | 'lower' | 'push' | 'pull' | 'legs' | 'cardio'
 
-export interface LastPerformance {
-  weight: number
-  reps: number
-}
-
-export interface LoggedSet {
+export interface LoggedStrengthEntry {
   id: string
-  exerciseId: string
+  entryType: 'strength'
+  exerciseName: string
   weight: number
   reps: number
   isPr: boolean
 }
 
-export interface WorkoutExercise {
-  exercise: Exercise
-  targetSets: number
-  lastPerformance: LastPerformance | null
+export interface LoggedCardioEntry {
+  id: string
+  entryType: 'cardio'
+  exerciseName: string // the activity, e.g. "Running"
+  durationMinutes: number
+  isPr: boolean
 }
+
+export type LoggedEntry = LoggedStrengthEntry | LoggedCardioEntry
 
 export interface SessionQuest {
   id: string

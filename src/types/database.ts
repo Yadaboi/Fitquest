@@ -1,8 +1,8 @@
 // Hand-authored in the shape `supabase gen types typescript --linked`
 // produces, since the Supabase CLI isn't available in this environment.
-// Mirrors supabase/migrations/0001_init.sql and 0002_achievements.sql
-// exactly. Run the real generator against the linked project and replace
-// this file to get a verified, canonical version.
+// Mirrors supabase/migrations/0001_init.sql, 0002_achievements.sql, and
+// 0003_freeform_workouts.sql exactly. Run the real generator against the
+// linked project and replace this file to get a verified, canonical version.
 
 export interface Database {
   public: {
@@ -50,34 +50,12 @@ export interface Database {
           updated_at?: string
         }
       }
-      exercises: {
-        Row: {
-          id: string
-          name: string
-          category: 'push' | 'pull' | 'legs' | 'core'
-          cue: string
-          is_bodyweight: boolean
-        }
-        Insert: {
-          id: string
-          name: string
-          category: 'push' | 'pull' | 'legs' | 'core'
-          cue: string
-          is_bodyweight?: boolean
-        }
-        Update: {
-          id?: string
-          name?: string
-          category?: 'push' | 'pull' | 'legs' | 'core'
-          cue?: string
-          is_bodyweight?: boolean
-        }
-      }
       workouts: {
         Row: {
           id: string
           user_id: string
           date: string
+          day_type: 'upper' | 'lower' | 'push' | 'pull' | 'legs' | 'cardio' | null
           completed_at: string | null
           created_at: string
         }
@@ -85,6 +63,7 @@ export interface Database {
           id?: string
           user_id: string
           date?: string
+          day_type?: 'upper' | 'lower' | 'push' | 'pull' | 'legs' | 'cardio' | null
           completed_at?: string | null
           created_at?: string
         }
@@ -92,6 +71,7 @@ export interface Database {
           id?: string
           user_id?: string
           date?: string
+          day_type?: 'upper' | 'lower' | 'push' | 'pull' | 'legs' | 'cardio' | null
           completed_at?: string | null
           created_at?: string
         }
@@ -100,27 +80,33 @@ export interface Database {
         Row: {
           id: string
           workout_id: string
-          exercise_id: string
-          weight: number
-          reps: number
+          exercise_name: string
+          entry_type: 'strength' | 'cardio'
+          weight: number | null
+          reps: number | null
+          duration_minutes: number | null
           is_pr: boolean
           created_at: string
         }
         Insert: {
           id?: string
           workout_id: string
-          exercise_id: string
-          weight?: number
-          reps: number
+          exercise_name: string
+          entry_type: 'strength' | 'cardio'
+          weight?: number | null
+          reps?: number | null
+          duration_minutes?: number | null
           is_pr?: boolean
           created_at?: string
         }
         Update: {
           id?: string
           workout_id?: string
-          exercise_id?: string
-          weight?: number
-          reps?: number
+          exercise_name?: string
+          entry_type?: 'strength' | 'cardio'
+          weight?: number | null
+          reps?: number | null
+          duration_minutes?: number | null
           is_pr?: boolean
           created_at?: string
         }

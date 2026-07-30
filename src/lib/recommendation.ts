@@ -1,77 +1,75 @@
-import { EXERCISE_LIBRARY } from './mockData'
 import type { HistoryWorkout } from '../hooks/useWorkoutHistory'
-import type { Exercise } from '../types/domain'
+import type { DayType } from '../types/domain'
 
-export type ExerciseCategory = Exercise['category']
-
-const CATEGORY_LABELS: Record<ExerciseCategory, string> = {
-  push: 'push',
-  pull: 'pull',
-  legs: 'legs',
-  core: 'core',
-}
-
-// Fixed iteration order so ties (e.g. two categories both "never trained")
+// Fixed iteration order so ties (e.g. two day types both "never trained")
 // resolve the same way every time instead of depending on Map insertion order.
-const CATEGORY_ORDER: ExerciseCategory[] = ['legs', 'push', 'pull', 'core']
+export const DAY_TYPES: DayType[] = ['upper', 'lower', 'push', 'pull', 'legs', 'cardio']
 
-const CATEGORY_BY_EXERCISE_ID = new Map(EXERCISE_LIBRARY.map((e) => [e.id, e.category]))
+export const DAY_TYPE_LABELS: Record<DayType, string> = {
+  upper: 'Upper Body',
+  lower: 'Lower Body',
+  push: 'Push',
+  pull: 'Pull',
+  legs: 'Legs',
+  cardio: 'Cardio',
+}
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000
 
 export interface FocusRecommendation {
-  category: ExerciseCategory
-  daysSinceTrained: number | null // null = never logged a set in this category
+  dayType: DayType
+  daysSinceTrained: number | null // null = never logged this day type
   message: string
 }
 
-// v1 coach logic (history-only): recommends the category that's gone
-// longest without a logged set. Deliberately doesn't factor in soreness,
+// v1 coach logic (history-only): recommends the day type that's gone
+// longest without a logged session. Reads workouts.day_type directly (set
+// at logging time) rather than inferring a category from exercise names —
+// simpler and more accurate than trying to reverse-engineer intent from
+// free-typed exercise names. Deliberately doesn't factor in soreness,
 // sleep, or other recovery signals — the app doesn't collect that data yet,
 // and fabricating a "recovery score" from nothing would just be noise
 // dressed up as insight. Returns null when there's no history yet, or when
-// every category was touched within the last day (nothing meaningfully overdue).
+// every day type was touched within the last day (nothing meaningfully overdue).
 export function getFocusRecommendation(
   history: HistoryWorkout[],
   today: Date = new Date(),
 ): FocusRecommendation | null {
   if (history.length === 0) return null
 
-  const lastTrainedByCategory = new Map<ExerciseCategory, Date>()
+  const lastTrainedByDayType = new Map<DayType, Date>()
   for (const workout of history) {
+    if (!workout.day_type) continue // legacy workouts predate day types — skip, don't guess
     const workoutDate = new Date(workout.date)
-    for (const set of workout.sets) {
-      const category = CATEGORY_BY_EXERCISE_ID.get(set.exercise_id)
-      if (!category) continue
-      const current = lastTrainedByCategory.get(category)
-      if (!current || workoutDate > current) lastTrainedByCategory.set(category, workoutDate)
-    }
+    const current = lastTrainedByDayType.get(workout.day_type)
+    if (!current || workoutDate > current) lastTrainedByDayType.set(workout.day_type, workoutDate)
   }
+  if (lastTrainedByDayType.size === 0) return null
 
-  let focusCategory: ExerciseCategory | null = null
+  let focusDayType: DayType | null = null
   let maxDays = -Infinity
-  for (const category of CATEGORY_ORDER) {
-    const lastTrained = lastTrainedByCategory.get(category)
+  for (const dayType of DAY_TYPES) {
+    const lastTrained = lastTrainedByDayType.get(dayType)
     const days = lastTrained
       ? Math.floor((today.getTime() - lastTrained.getTime()) / MS_PER_DAY)
       : Infinity
     if (days > maxDays) {
       maxDays = days
-      focusCategory = category
+      focusDayType = dayType
     }
   }
-  if (!focusCategory) return null
+  if (!focusDayType) return null
 
   // Everything's been touched within the last day — nothing overdue enough
   // to call out, so stay quiet rather than manufacture urgency.
   if (maxDays <= 1) return null
 
   const daysSinceTrained = Number.isFinite(maxDays) ? maxDays : null
-  const label = CATEGORY_LABELS[focusCategory]
+  const label = DAY_TYPE_LABELS[focusDayType]
   const message =
     daysSinceTrained === null
-      ? `You haven't logged a ${label} exercise yet — today's a good day to start.`
+      ? `You haven't logged a ${label} day yet — today's a good day to start.`
       : `You haven't trained ${label} in ${daysSinceTrained} days — today's a good day to prioritize it.`
 
-  return { category: focusCategory, daysSinceTrained, message }
+  return { dayType: focusDayType, daysSinceTrained, message }
 }
