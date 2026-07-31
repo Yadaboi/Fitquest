@@ -256,6 +256,35 @@ export function TrainPage() {
 
     setNavigateHomeAfterCelebrations(true)
     setCelebrationQueue(newCelebrations)
+
+    // Fire-and-forget: the coach reacting to this workout is a nice-to-have,
+    // never something "Finish Workout" should wait on or fail because of.
+    if (dayType) {
+      supabase.functions
+        .invoke('coach-chat', {
+          body: {
+            trigger: 'post_workout',
+            event: {
+              dayType,
+              setCount: entries.length,
+              xpAwarded: data.xpAwarded,
+              newTotalXp: data.newTotalXp,
+              streakWeeks: data.streakWeeks,
+              shieldAwarded: data.shieldAwarded,
+              prCount: data.prCount,
+              unlockedAchievements: unlocked,
+              completedQuestTitles: quests.filter((q) => q.isComplete).map((q) => q.title),
+            },
+          },
+        })
+        .then(({ error: coachError }) => {
+          if (!coachError) {
+            queryClient.invalidateQueries({ queryKey: ['coach-messages', userId] })
+            queryClient.invalidateQueries({ queryKey: ['coach-messages-latest', userId] })
+          }
+        })
+        .catch(() => {})
+    }
   }
 
   function handleDismissCelebration() {

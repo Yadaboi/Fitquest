@@ -9,6 +9,7 @@ import { getSessionQuestsForDayType } from '../../lib/quests'
 import { getWeeklyGoalProgress } from '../../lib/goals'
 import { GoalsCard } from './GoalsCard'
 import { FriendsCard } from './FriendsCard'
+import { CoachCard } from './CoachCard'
 
 // Hero: today's workout CTA (recommendation-led when there is one). Status
 // strip: level/XP, streak — glanceable, not competing for attention.
@@ -86,6 +87,8 @@ export function HomePage() {
           Start Workout
         </button>
       </section>
+
+      <CoachCard userId={userId} />
 
       <GoalsCard progress={goalProgress} />
 

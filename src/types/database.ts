@@ -184,6 +184,32 @@ export interface Database {
           responded_at?: string | null
         }
       }
+      coach_messages: {
+        Row: {
+          id: string
+          user_id: string
+          role: 'user' | 'assistant'
+          source: 'chat' | 'post_workout'
+          content: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          role: 'user' | 'assistant'
+          source?: 'chat' | 'post_workout'
+          content: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          role?: 'user' | 'assistant'
+          source?: 'chat' | 'post_workout'
+          content?: string
+          created_at?: string
+        }
+      }
     }
   }
 }
