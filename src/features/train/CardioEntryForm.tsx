@@ -36,7 +36,9 @@ export function CardioEntryForm({
           <option key={s} value={s} />
         ))}
       </datalist>
-      <Stepper label="Duration" value={duration} step={5} unit="min" onChange={setDuration} min={5} />
+      {/* 1-minute steps, not 5 — coarser increments made it impossible to
+          show meaningful progress on a timed entry like "Mile Run". */}
+      <Stepper label="Duration" value={duration} step={1} unit="min" onChange={setDuration} min={1} />
       <button
         type="button"
         onClick={handleLog}
