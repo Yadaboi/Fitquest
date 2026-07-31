@@ -8,6 +8,7 @@ import { getFocusRecommendation, DAY_TYPE_LABELS } from '../../lib/recommendatio
 import { getSessionQuestsForDayType } from '../../lib/quests'
 import { getWeeklyGoalProgress } from '../../lib/goals'
 import { GoalsCard } from './GoalsCard'
+import { FriendsCard } from './FriendsCard'
 
 // Hero: today's workout CTA (recommendation-led when there is one). Status
 // strip: level/XP, streak — glanceable, not competing for attention.
@@ -87,6 +88,8 @@ export function HomePage() {
       </section>
 
       <GoalsCard progress={goalProgress} />
+
+      <FriendsCard userId={userId} />
 
       <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
         <p className="text-xs font-medium text-[var(--color-text-faint)]">Today&apos;s quests</p>

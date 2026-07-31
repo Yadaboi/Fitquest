@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { usePlayerStats } from '../../hooks/usePlayerStats'
 import { useProfile, useUpdateProfile } from '../../hooks/useProfile'
@@ -22,6 +22,11 @@ export function ProfilePage() {
   const { data: unlockedAchievements } = useAchievements(userId)
   const { data: xpEvents } = useXpEvents(userId)
   const updateProfile = useUpdateProfile(userId)
+  const [displayNameInput, setDisplayNameInput] = useState('')
+
+  useEffect(() => {
+    if (profile) setDisplayNameInput(profile.display_name ?? '')
+  }, [profile])
 
   const totalXp = stats?.total_xp ?? 0
   const streakWeeks = stats?.streak_weeks ?? 0
@@ -43,6 +48,16 @@ export function ProfilePage() {
   function handleWeeklyGoalChange(nextGoal: number) {
     if (!profile) return
     updateProfile.mutate({ experience_level: profile.experience_level, weekly_goal: nextGoal })
+  }
+
+  function handleSaveDisplayName() {
+    if (!profile) return
+    const trimmed = displayNameInput.trim()
+    updateProfile.mutate({
+      experience_level: profile.experience_level,
+      weekly_goal: profile.weekly_goal,
+      display_name: trimmed.length > 0 ? trimmed : null,
+    })
   }
 
   return (
@@ -84,6 +99,29 @@ export function ProfilePage() {
 
       <section className="flex flex-col gap-4 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
         <p className="text-xs font-medium text-[var(--color-text-faint)]">Settings</p>
+
+        <div className="flex flex-col gap-2">
+          <span className="text-sm text-[var(--color-text-muted)]">Display name</span>
+          <p className="text-xs text-[var(--color-text-faint)]">Shown to friends instead of your email.</p>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={displayNameInput}
+              onChange={(e) => setDisplayNameInput(e.target.value)}
+              maxLength={40}
+              placeholder="Add a name"
+              className="flex-1 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-2)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-faint)]"
+            />
+            <button
+              type="button"
+              onClick={handleSaveDisplayName}
+              disabled={displayNameInput.trim() === (profile?.display_name ?? '')}
+              className="rounded-lg bg-[var(--color-accent)] px-3 py-2 text-sm font-semibold text-[var(--color-accent-foreground)] disabled:opacity-40"
+            >
+              Save
+            </button>
+          </div>
+        </div>
 
         <div className="flex items-center justify-between text-sm">
           <span className="text-[var(--color-text-muted)]">Experience level</span>

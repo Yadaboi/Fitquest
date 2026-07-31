@@ -4,6 +4,7 @@ import { HomePage } from './features/home/HomePage'
 import { TrainPage } from './features/train/TrainPage'
 import { StatsPage } from './features/stats/StatsPage'
 import { ProfilePage } from './features/profile/ProfilePage'
+import { FriendsPage } from './features/friends/FriendsPage'
 import { OnboardingPage } from './features/onboarding/OnboardingPage'
 import { AuthPage } from './features/auth/AuthPage'
 import { LoadingScreen } from './components/ui/LoadingScreen'
@@ -29,6 +30,7 @@ function AuthedApp({ userId }: { userId: string }) {
           <Route path="train" element={<TrainPage />} />
           <Route path="stats" element={<StatsPage />} />
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="friends" element={<FriendsPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

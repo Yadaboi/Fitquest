@@ -1,8 +1,9 @@
 // Hand-authored in the shape `supabase gen types typescript --linked`
 // produces, since the Supabase CLI isn't available in this environment.
-// Mirrors supabase/migrations/0001_init.sql, 0002_achievements.sql, and
-// 0003_freeform_workouts.sql exactly. Run the real generator against the
-// linked project and replace this file to get a verified, canonical version.
+// Mirrors supabase/migrations/0001_init.sql, 0002_achievements.sql,
+// 0003_freeform_workouts.sql, and 0004_friends.sql exactly. Run the real
+// generator against the linked project and replace this file to get a
+// verified, canonical version.
 
 export interface Database {
   public: {
@@ -12,18 +13,21 @@ export interface Database {
           id: string
           experience_level: 'new' | 'returning' | null
           weekly_goal: number
+          display_name: string | null
           created_at: string
         }
         Insert: {
           id: string
           experience_level?: 'new' | 'returning' | null
           weekly_goal?: number
+          display_name?: string | null
           created_at?: string
         }
         Update: {
           id?: string
           experience_level?: 'new' | 'returning' | null
           weekly_goal?: number
+          display_name?: string | null
           created_at?: string
         }
       }
@@ -152,6 +156,32 @@ export interface Database {
           achievement_id?: string
           tier_index?: number
           unlocked_at?: string
+        }
+      }
+      friendships: {
+        Row: {
+          id: string
+          requester_id: string
+          addressee_id: string
+          status: 'pending' | 'accepted'
+          created_at: string
+          responded_at: string | null
+        }
+        Insert: {
+          id?: string
+          requester_id: string
+          addressee_id: string
+          status?: 'pending' | 'accepted'
+          created_at?: string
+          responded_at?: string | null
+        }
+        Update: {
+          id?: string
+          requester_id?: string
+          addressee_id?: string
+          status?: 'pending' | 'accepted'
+          created_at?: string
+          responded_at?: string | null
         }
       }
     }

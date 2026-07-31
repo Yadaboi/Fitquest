@@ -22,7 +22,10 @@ export function useUpdateProfile(userId: string | undefined) {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (updates: Pick<ProfileRow, 'experience_level' | 'weekly_goal'>) => {
+    mutationFn: async (
+      updates: Pick<ProfileRow, 'experience_level' | 'weekly_goal'> &
+        Partial<Pick<ProfileRow, 'display_name'>>,
+    ) => {
       const { error } = await supabase.from('profiles').update(updates).eq('id', userId)
       if (error) throw error
     },
