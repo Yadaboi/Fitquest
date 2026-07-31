@@ -16,31 +16,27 @@ export function DayTypePicker({
   locked: boolean
 }) {
   return (
-    <div className="flex flex-wrap gap-2">
-      {DAY_TYPES.map((dayType) => {
-        const isSelected = value === dayType
-        return (
-          <button
-            key={dayType}
-            type="button"
-            disabled={locked}
-            onClick={() => onChange(dayType)}
-            className={
-              'flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors disabled:cursor-default ' +
-              (isSelected
-                ? 'border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-accent-foreground)]'
-                : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] disabled:opacity-50')
-            }
-          >
+    <div className="flex flex-col gap-1.5">
+      <label htmlFor="day-type-select" className="text-xs font-medium text-[var(--color-text-faint)]">
+        Today&apos;s focus
+      </label>
+      <select
+        id="day-type-select"
+        value={value ?? ''}
+        disabled={locked}
+        onChange={(e) => onChange(e.target.value as DayType)}
+        className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-2)] px-3 py-2.5 text-sm font-medium text-[var(--color-text)] disabled:opacity-50"
+      >
+        <option value="" disabled>
+          Choose a day type
+        </option>
+        {DAY_TYPES.map((dayType) => (
+          <option key={dayType} value={dayType}>
             {DAY_TYPE_LABELS[dayType]}
-            {recommended === dayType && (
-              <span className="rounded-full bg-[var(--color-surface-2)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--color-accent)]">
-                Recommended
-              </span>
-            )}
-          </button>
-        )
-      })}
+            {recommended === dayType ? ' (Recommended)' : ''}
+          </option>
+        ))}
+      </select>
     </div>
   )
 }
