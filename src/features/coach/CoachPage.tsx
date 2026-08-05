@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useCoachMessages } from '../../hooks/useCoachMessages'
 import { useSendCoachMessage } from '../../hooks/useSendCoachMessage'
 
 export function CoachPage() {
+  const navigate = useNavigate()
   const { session } = useAuth()
   const userId = session!.user.id
 
@@ -34,9 +36,19 @@ export function CoachPage() {
         {isLoading ? (
           <p className="text-sm text-[var(--color-text-muted)]">Loading your conversation...</p>
         ) : !messages || messages.length === 0 ? (
-          <p className="text-sm text-[var(--color-text-muted)]">
-            Ask your coach anything, or just say hey.
-          </p>
+          <div className="flex flex-col items-start gap-3 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+            <p className="text-sm text-[var(--color-text-muted)]">
+              Ask your coach anything, or just say hey. The more you log, the better it gets to
+              know your training and can tailor its advice to you.
+            </p>
+            <button
+              type="button"
+              onClick={() => navigate('/train')}
+              className="text-xs font-medium text-[var(--color-accent)]"
+            >
+              Log a workout →
+            </button>
+          </div>
         ) : (
           <ul className="flex flex-col gap-2">
             {messages.map((msg) => (

@@ -305,6 +305,19 @@ export function TrainPage() {
         <p className="text-sm text-[var(--color-text-muted)]">{entries.length} logged</p>
       </header>
 
+      <button
+        type="button"
+        onClick={() => navigate('/coach')}
+        className="flex items-center justify-between rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-left transition-colors hover:bg-[var(--color-surface-2)]"
+      >
+        <span className="text-sm text-[var(--color-text-muted)]">
+          Not sure about form, pacing, or what to do next?{' '}
+          <span className="text-[var(--color-text)]">Ask your coach</span> — every set you log
+          helps it know you better.
+        </span>
+        <span className="text-[var(--color-accent)]">→</span>
+      </button>
+
       {errorMessage && (
         <p className="rounded-lg border border-[var(--color-danger)] px-3 py-2 text-sm text-[var(--color-danger)]">
           {errorMessage}

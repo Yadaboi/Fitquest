@@ -53,14 +53,19 @@ export function AuthPage() {
 
   return (
     <div className="flex min-h-svh flex-col justify-center gap-8 px-6 py-10">
-      <div>
+      <div className="animate-fade-in-up">
         <p className="text-sm font-medium text-[var(--color-accent)]">FitQuest</p>
         <h1 className="mt-1 text-2xl font-semibold text-[var(--color-text)]">
           {mode === 'signup' ? 'Create your account' : 'Welcome back'}
         </h1>
       </div>
 
-      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
+      <form
+        onSubmit={handleSubmit}
+        noValidate
+        className="animate-fade-in-up flex flex-col gap-4"
+        style={{ animationDelay: '80ms' }}
+      >
         <label className="flex flex-col gap-1.5 text-sm text-[var(--color-text-muted)]">
           Email
           <input
@@ -98,7 +103,10 @@ export function AuthPage() {
         </button>
       </form>
 
-      <div className="flex items-center gap-3 text-xs text-[var(--color-text-faint)]">
+      <div
+        className="animate-fade-in-up flex items-center gap-3 text-xs text-[var(--color-text-faint)]"
+        style={{ animationDelay: '160ms' }}
+      >
         <div className="h-px flex-1 bg-[var(--color-border)]" />
         or
         <div className="h-px flex-1 bg-[var(--color-border)]" />
@@ -107,7 +115,8 @@ export function AuthPage() {
       <button
         type="button"
         onClick={handleGoogleSignIn}
-        className="flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] py-3 text-sm font-semibold text-[var(--color-text)] transition-colors hover:bg-[var(--color-surface-2)]"
+        className="animate-fade-in-up flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] py-3 text-sm font-semibold text-[var(--color-text)] transition-colors hover:bg-[var(--color-surface-2)]"
+        style={{ animationDelay: '220ms' }}
       >
         <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
           <path
@@ -137,7 +146,8 @@ export function AuthPage() {
           setError(null)
           setInfoMessage(null)
         }}
-        className="cursor-pointer text-sm text-[var(--color-text-faint)]"
+        className="animate-fade-in-up cursor-pointer text-sm text-[var(--color-text-faint)]"
+        style={{ animationDelay: '280ms' }}
       >
         {mode === 'signup' ? 'Already have an account? Sign in' : "New here? Create an account"}
       </button>
