@@ -21,7 +21,7 @@ export function OnboardingPage() {
   }
 
   return (
-    <div className="flex min-h-svh flex-col justify-center gap-8 px-6 py-10">
+    <div className="animate-fade-in-up flex min-h-svh flex-col justify-center gap-8 px-6 py-10">
       <div>
         <p className="text-sm font-medium text-[var(--color-accent)]">Welcome to FitQuest</p>
         <h1 className="mt-1 text-2xl font-semibold text-[var(--color-text)]">
