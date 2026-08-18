@@ -5,7 +5,7 @@
 // straight into any shared/*.ts function that expects CoachWorkout[] just
 // type-checks, no client-side conversion needed.
 
-export type DayType = 'upper' | 'lower' | 'push' | 'pull' | 'legs' | 'cardio'
+export type DayType = 'upper' | 'lower' | 'push' | 'pull' | 'legs' | 'cardio' | 'custom'
 
 export interface CoachSet {
   id: string

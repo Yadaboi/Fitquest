@@ -59,7 +59,8 @@ export interface Database {
           id: string
           user_id: string
           date: string
-          day_type: 'upper' | 'lower' | 'push' | 'pull' | 'legs' | 'cardio' | null
+          day_type: 'upper' | 'lower' | 'push' | 'pull' | 'legs' | 'cardio' | 'custom' | null
+          custom_label: string | null
           completed_at: string | null
           created_at: string
         }
@@ -67,7 +68,8 @@ export interface Database {
           id?: string
           user_id: string
           date?: string
-          day_type?: 'upper' | 'lower' | 'push' | 'pull' | 'legs' | 'cardio' | null
+          day_type?: 'upper' | 'lower' | 'push' | 'pull' | 'legs' | 'cardio' | 'custom' | null
+          custom_label?: string | null
           completed_at?: string | null
           created_at?: string
         }
@@ -75,7 +77,8 @@ export interface Database {
           id?: string
           user_id?: string
           date?: string
-          day_type?: 'upper' | 'lower' | 'push' | 'pull' | 'legs' | 'cardio' | null
+          day_type?: 'upper' | 'lower' | 'push' | 'pull' | 'legs' | 'cardio' | 'custom' | null
+          custom_label?: string | null
           completed_at?: string | null
           created_at?: string
         }

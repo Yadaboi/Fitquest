@@ -1,17 +1,22 @@
 import { DAY_TYPES, DAY_TYPE_LABELS } from '../../lib/recommendation'
 import type { DayType } from '../../types/domain'
 
-// Six options, not a narrower upper/lower or push/pull/legs split — the user
-// picks whichever framework fits that day. Locks once the workout row
-// exists (a session can't mix day types).
+// Seven options, not a narrower upper/lower or push/pull/legs split — the
+// user picks whichever framework fits that day, including "custom" for a
+// session that mixes muscle groups (e.g. shoulders + legs). Locks once the
+// workout row exists (a session can't mix day types, or change its label).
 export function DayTypePicker({
   value,
   onChange,
+  customLabel,
+  onCustomLabelChange,
   recommended,
   locked,
 }: {
   value: DayType | null
   onChange: (dayType: DayType) => void
+  customLabel: string
+  onCustomLabelChange: (label: string) => void
   recommended: DayType | null
   locked: boolean
 }) {
@@ -37,6 +42,18 @@ export function DayTypePicker({
           </option>
         ))}
       </select>
+
+      {value === 'custom' && (
+        <input
+          type="text"
+          value={customLabel}
+          disabled={locked}
+          onChange={(e) => onCustomLabelChange(e.target.value)}
+          placeholder="e.g. Shoulders & Legs"
+          maxLength={60}
+          className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-2)] px-3 py-2.5 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-faint)] disabled:opacity-50"
+        />
+      )}
     </div>
   )
 }

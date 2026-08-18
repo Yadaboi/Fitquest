@@ -10,6 +10,7 @@ import type { DayType } from '../../../shared/workout-shape.ts'
 
 export interface PostWorkoutEvent {
   dayType: DayType
+  customLabel?: string | null // only meaningful when dayType === 'custom'
   setCount: number
   xpAwarded: number
   newTotalXp: number
@@ -118,8 +119,11 @@ export function formatPostWorkoutEvent(event: PostWorkoutEvent): string {
 
   const questLine = event.completedQuestTitles.length > 0 ? event.completedQuestTitles.join('; ') : 'none'
 
+  const dayTypeLabel =
+    event.dayType === 'custom' && event.customLabel ? event.customLabel : DAY_TYPE_LABELS[event.dayType]
+
   return `Just happened — this is why you're speaking first, before they've asked you anything:
-- Finished a ${DAY_TYPE_LABELS[event.dayType]} workout: ${event.setCount} logged
+- Finished a ${dayTypeLabel} workout: ${event.setCount} logged
 - XP: +${event.xpAwarded} (now ${event.newTotalXp} total)${leveledUp ? `, leveled up from ${prevLevel} to ${newLevel}` : ''}
 - PRs this session: ${event.prCount}${event.prCount > 0 ? ' — call these out specifically' : ''}
 - ${event.shieldAwarded ? 'Earned a shield this session' : 'No shield this session'}

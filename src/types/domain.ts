@@ -1,7 +1,7 @@
 // In-session UI shapes for the workout currently being logged (camelCase,
 // not yet persisted). DB row shapes live in types/supabase.ts instead.
 
-export type DayType = 'upper' | 'lower' | 'push' | 'pull' | 'legs' | 'cardio'
+export type DayType = 'upper' | 'lower' | 'push' | 'pull' | 'legs' | 'cardio' | 'custom'
 
 export interface LoggedStrengthEntry {
   id: string

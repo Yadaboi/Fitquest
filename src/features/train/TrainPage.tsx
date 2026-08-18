@@ -42,6 +42,7 @@ export function TrainPage() {
   const cardioSuggestions = useMemo(() => distinctNamesMostRecentFirst(history ?? [], 'cardio'), [history])
 
   const [dayType, setDayType] = useState<DayType | null>(null)
+  const [customLabel, setCustomLabel] = useState('')
   const [workoutId, setWorkoutId] = useState<string | null>(null)
   const [entries, setEntries] = useState<LoggedEntry[]>([])
   const [ticks, setTicks] = useState<XpTick[]>([])
@@ -109,7 +110,11 @@ export function TrainPage() {
     if (workoutId) return workoutId
     const { data, error } = await supabase
       .from('workouts')
-      .insert({ user_id: userId, day_type: chosenDayType })
+      .insert({
+        user_id: userId,
+        day_type: chosenDayType,
+        custom_label: chosenDayType === 'custom' ? customLabel.trim() : null,
+      })
       .select('id')
       .single()
     if (error || !data) throw error ?? new Error('Failed to create workout')
@@ -118,7 +123,7 @@ export function TrainPage() {
   }
 
   async function handleLogSet(exerciseName: string, weight: number, reps: number) {
-    if (!dayType) return
+    if (!dayType || (dayType === 'custom' && !customLabel.trim())) return
     setErrorMessage(null)
     const last = lastPerformanceByName[normalizeExerciseName(exerciseName)]
     // Optimistic guess for immediate feedback — the completeWorkout function
@@ -165,7 +170,7 @@ export function TrainPage() {
   }
 
   async function handleLogCardio(activityName: string, durationMinutes: number) {
-    if (!dayType) return
+    if (!dayType || (dayType === 'custom' && !customLabel.trim())) return
     setErrorMessage(null)
     const last = lastCardioByName[normalizeExerciseName(activityName)]
     const isPr = !!last && durationMinutes > last.durationMinutes
@@ -266,6 +271,7 @@ export function TrainPage() {
             trigger: 'post_workout',
             event: {
               dayType,
+              customLabel: dayType === 'custom' ? customLabel.trim() : null,
               setCount: entries.length,
               xpAwarded: data.xpAwarded,
               newTotalXp: data.newTotalXp,
@@ -300,7 +306,11 @@ export function TrainPage() {
 
       <header>
         <h1 className="text-xl font-semibold text-[var(--color-text)]">
-          {dayType ? DAY_TYPE_LABELS[dayType] : 'Choose today’s focus'}
+          {dayType === 'custom'
+            ? customLabel.trim() || 'Custom'
+            : dayType
+              ? DAY_TYPE_LABELS[dayType]
+              : 'Choose today’s focus'}
         </h1>
         <p className="text-sm text-[var(--color-text-muted)]">{entries.length} logged</p>
       </header>
@@ -329,6 +339,8 @@ export function TrainPage() {
       <DayTypePicker
         value={dayType}
         onChange={setDayType}
+        customLabel={customLabel}
+        onCustomLabelChange={setCustomLabel}
         recommended={recommendation?.dayType ?? null}
         locked={workoutId !== null}
       />
@@ -359,17 +371,25 @@ export function TrainPage() {
         </p>
       )}
 
+      {dayType === 'custom' && !customLabel.trim() && (
+        <p className="text-sm text-[var(--color-text-muted)]">
+          Give this session a name above (e.g. &quot;Shoulders &amp; Legs&quot;) to start logging.
+        </p>
+      )}
+
       {dayType === 'cardio' && (
         <CardioEntryForm suggestions={cardioSuggestions} onLogCardio={handleLogCardio} />
       )}
 
-      {dayType !== null && dayType !== 'cardio' && (
-        <StrengthEntryForm
-          suggestions={strengthSuggestions}
-          lastPerformanceByName={lastPerformanceByName}
-          onLogSet={handleLogSet}
-        />
-      )}
+      {dayType !== null &&
+        dayType !== 'cardio' &&
+        (dayType !== 'custom' || !!customLabel.trim()) && (
+          <StrengthEntryForm
+            suggestions={strengthSuggestions}
+            lastPerformanceByName={lastPerformanceByName}
+            onLogSet={handleLogSet}
+          />
+        )}
 
       <LoggedEntriesTable entries={entries} />
 

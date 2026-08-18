@@ -2,7 +2,13 @@ import type { CoachWorkout, DayType } from './workout-shape.ts'
 
 // Fixed iteration order so ties (e.g. two day types both "never trained")
 // resolve the same way every time instead of depending on Map insertion order.
-export const DAY_TYPES: DayType[] = ['upper', 'lower', 'push', 'pull', 'legs', 'cardio']
+export const DAY_TYPES: DayType[] = ['upper', 'lower', 'push', 'pull', 'legs', 'cardio', 'custom']
+
+// 'custom' is a catch-all for sessions that don't fit any fixed split (its
+// real name lives in workouts.custom_label, not here) — it's excluded below
+// so the recommendation logic never treats "haven't done a Custom day" as a
+// meaningful gap the way "haven't done Legs" is.
+const RECOMMENDABLE_DAY_TYPES = DAY_TYPES.filter((d) => d !== 'custom')
 
 export const DAY_TYPE_LABELS: Record<DayType, string> = {
   upper: 'Upper Body',
@@ -11,6 +17,7 @@ export const DAY_TYPE_LABELS: Record<DayType, string> = {
   pull: 'Pull',
   legs: 'Legs',
   cardio: 'Cardio',
+  custom: 'Custom',
 }
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000
@@ -47,7 +54,7 @@ export function getFocusRecommendation(
 
   let focusDayType: DayType | null = null
   let maxDays = -Infinity
-  for (const dayType of DAY_TYPES) {
+  for (const dayType of RECOMMENDABLE_DAY_TYPES) {
     const lastTrained = lastTrainedByDayType.get(dayType)
     const days = lastTrained
       ? Math.floor((today.getTime() - lastTrained.getTime()) / MS_PER_DAY)

@@ -30,7 +30,7 @@ const corsHeaders = {
 const COACH_MODEL = 'claude-haiku-4-5' // one-line change to upgrade later
 const MAX_REPLY_TOKENS = 400
 
-const DAY_TYPES = new Set<string>(['upper', 'lower', 'push', 'pull', 'legs', 'cardio'])
+const DAY_TYPES = new Set<string>(['upper', 'lower', 'push', 'pull', 'legs', 'cardio', 'custom'])
 
 function jsonResponse(body: unknown, status: number) {
   return new Response(JSON.stringify(body), {
@@ -45,6 +45,7 @@ function isValidPostWorkoutEvent(event: unknown): event is PostWorkoutEvent {
   return (
     typeof e.dayType === 'string' &&
     DAY_TYPES.has(e.dayType) &&
+    (e.customLabel === undefined || e.customLabel === null || typeof e.customLabel === 'string') &&
     typeof e.setCount === 'number' &&
     typeof e.xpAwarded === 'number' &&
     typeof e.newTotalXp === 'number' &&
@@ -203,9 +204,11 @@ Deno.serve(async (req) => {
       // In-memory only — never persisted, so the user never sees a fake
       // message attributed to themselves. Just gives Claude a valid turn
       // to react to, since there's no real user message for this trigger.
+      const dayTypeDescription =
+        event.dayType === 'custom' && event.customLabel ? event.customLabel : event.dayType
       claudeMessages.push({
         role: 'user',
-        content: `[App note, not from the user: they just finished a ${event.dayType} workout. React to it — see "Just happened" in your instructions.]`,
+        content: `[App note, not from the user: they just finished a ${dayTypeDescription} workout. React to it — see "Just happened" in your instructions.]`,
       })
     }
 
