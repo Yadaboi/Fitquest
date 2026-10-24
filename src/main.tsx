@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClient } from './lib/queryClient'
 import { AuthProvider } from './context/AuthContext'
+import './lib/installPrompt' // capture the install event before React mounts
 import './index.css'
 import App from './App.tsx'
 

@@ -10,6 +10,7 @@ import { getWeeklyGoalProgress } from '../../lib/goals'
 import { GoalsCard } from './GoalsCard'
 import { FriendsCard } from './FriendsCard'
 import { CoachCard } from './CoachCard'
+import { InstallPrompt } from '../../components/ui/InstallPrompt'
 
 // Hero: today's workout CTA (recommendation-led when there is one). Status
 // strip: level/XP, streak — glanceable, not competing for attention.
@@ -32,6 +33,7 @@ export function HomePage() {
 
   return (
     <div className="flex flex-col gap-6">
+      <InstallPrompt />
       <header className="flex items-center justify-between rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3">
         <div>
           <p className="text-xs text-[var(--color-text-faint)]">

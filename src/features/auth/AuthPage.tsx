@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { supabase } from '../../lib/supabase'
+import { InstallPrompt } from '../../components/ui/InstallPrompt'
 
 const MIN_PASSWORD_LENGTH = 6
 
@@ -53,6 +54,8 @@ export function AuthPage() {
 
   return (
     <div className="flex min-h-svh flex-col justify-center gap-8 px-6 py-10">
+      <InstallPrompt className="animate-fade-in-up" />
+
       <div className="animate-fade-in-up">
         <p className="text-sm font-medium text-[var(--color-accent)]">FitQuest</p>
         <h1 className="mt-1 text-2xl font-semibold text-[var(--color-text)]">
