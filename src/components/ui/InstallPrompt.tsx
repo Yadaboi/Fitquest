@@ -56,7 +56,11 @@ export function InstallPrompt({ className = '' }: { className?: string }) {
 
   return (
     <section
-      className={`relative rounded-2xl border border-[var(--color-accent)] bg-[var(--color-surface)] p-4 ${className}`}
+      className={`relative overflow-hidden rounded-2xl border border-[var(--color-accent)]/60 p-4 shadow-[0_10px_32px_-12px_var(--color-accent)] ${className}`}
+      style={{
+        background:
+          'radial-gradient(120% 140% at 0% 0%, rgba(124, 108, 240, 0.28) 0%, rgba(124, 108, 240, 0.08) 45%, var(--color-surface) 75%)',
+      }}
       aria-label="Install FitQuest"
     >
       <button
@@ -67,31 +71,59 @@ export function InstallPrompt({ className = '' }: { className?: string }) {
       >
         ×
       </button>
-      <p className="text-xs font-medium text-[var(--color-accent)]">Get the app</p>
-      <p className="mt-1 pr-6 text-sm text-[var(--color-text)]">
-        Add FitQuest to your home screen — it opens full-screen, like a normal app.
-      </p>
+
+      <div className="flex items-center gap-3 pr-6">
+        <img
+          src={`${import.meta.env.BASE_URL}pwa-192x192.png`}
+          alt=""
+          width={48}
+          height={48}
+          className="h-12 w-12 flex-none rounded-xl shadow-[0_4px_14px_-4px_var(--color-accent)]"
+        />
+        <div>
+          <p className="text-base font-semibold text-[var(--color-text)]">Take FitQuest with you</p>
+          <p className="mt-0.5 text-sm leading-snug text-[var(--color-text-muted)]">
+            Add it to your home screen.
+            <br />
+            Opens full-screen, like a real app.
+          </p>
+        </div>
+      </div>
 
       {canPrompt ? (
         <button
           type="button"
           onClick={install}
-          className="mt-3 w-full rounded-xl bg-[var(--color-accent)] py-2.5 text-sm font-semibold text-[var(--color-accent-foreground)] transition-colors hover:bg-[var(--color-accent-hover)]"
+          className="mt-4 w-full rounded-xl bg-[var(--color-accent)] py-2.5 text-sm font-semibold text-[var(--color-accent-foreground)] transition-colors hover:bg-[var(--color-accent-hover)]"
         >
           Install FitQuest
         </button>
       ) : (
-        <ol className="mt-3 flex flex-col gap-1.5 text-sm text-[var(--color-text-muted)]">
-          <li>
-            1. Tap the <ShareIcon /> <span className="text-[var(--color-text)]">Share</span> button
-            in your browser
+        <ol className="mt-4 flex flex-col gap-2 text-sm text-[var(--color-text-muted)]">
+          <li className="flex items-center gap-2.5">
+            <StepNumber n={1} />
+            <span>
+              Tap <ShareIcon /> <span className="font-medium text-[var(--color-text)]">Share</span> in
+              your browser
+            </span>
           </li>
-          <li>
-            2. Choose <span className="text-[var(--color-text)]">Add to Home Screen</span>
+          <li className="flex items-center gap-2.5">
+            <StepNumber n={2} />
+            <span>
+              Choose <span className="font-medium text-[var(--color-text)]">Add to Home Screen</span>
+            </span>
           </li>
         </ol>
       )}
     </section>
+  )
+}
+
+function StepNumber({ n }: { n: number }) {
+  return (
+    <span className="flex h-6 w-6 flex-none items-center justify-center rounded-full bg-[var(--color-accent)] text-xs font-semibold text-[var(--color-accent-foreground)]">
+      {n}
+    </span>
   )
 }
 
