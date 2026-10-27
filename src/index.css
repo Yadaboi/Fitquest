@@ -70,6 +70,14 @@ button:not(:disabled) {
   }
 }
 
+/* Kept short on purpose: most first visits come from a link in a video, and
+   anything slower reads as "still loading" and loses people. */
 .animate-fade-in-up {
-  animation: fade-in-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: fade-in-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up {
+    animation: none;
+  }
 }

@@ -1,16 +1,22 @@
+import { lazy, Suspense } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
-import { AppShell } from './components/layout/AppShell'
-import { HomePage } from './features/home/HomePage'
-import { TrainPage } from './features/train/TrainPage'
-import { StatsPage } from './features/stats/StatsPage'
-import { ProfilePage } from './features/profile/ProfilePage'
-import { FriendsPage } from './features/friends/FriendsPage'
-import { CoachPage } from './features/coach/CoachPage'
-import { OnboardingPage } from './features/onboarding/OnboardingPage'
 import { AuthPage } from './features/auth/AuthPage'
 import { LoadingScreen } from './components/ui/LoadingScreen'
 import { useAuth } from './context/AuthContext'
 import { useProfile } from './hooks/useProfile'
+
+// Everything behind sign-in is loaded on demand, so a first-time visitor only
+// downloads what the sign-up screen needs and sees it sooner.
+const AppShell = lazy(() => import('./components/layout/AppShell').then((m) => ({ default: m.AppShell })))
+const HomePage = lazy(() => import('./features/home/HomePage').then((m) => ({ default: m.HomePage })))
+const TrainPage = lazy(() => import('./features/train/TrainPage').then((m) => ({ default: m.TrainPage })))
+const StatsPage = lazy(() => import('./features/stats/StatsPage').then((m) => ({ default: m.StatsPage })))
+const ProfilePage = lazy(() => import('./features/profile/ProfilePage').then((m) => ({ default: m.ProfilePage })))
+const FriendsPage = lazy(() => import('./features/friends/FriendsPage').then((m) => ({ default: m.FriendsPage })))
+const CoachPage = lazy(() => import('./features/coach/CoachPage').then((m) => ({ default: m.CoachPage })))
+const OnboardingPage = lazy(() =>
+  import('./features/onboarding/OnboardingPage').then((m) => ({ default: m.OnboardingPage })),
+)
 
 function AuthedApp({ userId }: { userId: string }) {
   const { data: profile, isLoading } = useProfile(userId)
@@ -21,20 +27,22 @@ function AuthedApp({ userId }: { userId: string }) {
 
   return (
     <BrowserRouter basename={import.meta.env.BASE_URL}>
-      <Routes>
-        <Route
-          path="/onboarding"
-          element={hasOnboarded ? <Navigate to="/" replace /> : <OnboardingPage />}
-        />
-        <Route element={hasOnboarded ? <AppShell /> : <Navigate to="/onboarding" replace />}>
-          <Route index element={<HomePage />} />
-          <Route path="train" element={<TrainPage />} />
-          <Route path="stats" element={<StatsPage />} />
-          <Route path="profile" element={<ProfilePage />} />
-          <Route path="friends" element={<FriendsPage />} />
-          <Route path="coach" element={<CoachPage />} />
-        </Route>
-      </Routes>
+      <Suspense fallback={<LoadingScreen />}>
+        <Routes>
+          <Route
+            path="/onboarding"
+            element={hasOnboarded ? <Navigate to="/" replace /> : <OnboardingPage />}
+          />
+          <Route element={hasOnboarded ? <AppShell /> : <Navigate to="/onboarding" replace />}>
+            <Route index element={<HomePage />} />
+            <Route path="train" element={<TrainPage />} />
+            <Route path="stats" element={<StatsPage />} />
+            <Route path="profile" element={<ProfilePage />} />
+            <Route path="friends" element={<FriendsPage />} />
+            <Route path="coach" element={<CoachPage />} />
+          </Route>
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   )
 }

@@ -67,7 +67,7 @@ export function AuthPage() {
         onSubmit={handleSubmit}
         noValidate
         className="animate-fade-in-up flex flex-col gap-4"
-        style={{ animationDelay: '120ms' }}
+        style={{ animationDelay: '50ms' }}
       >
         <label className="flex flex-col gap-1.5 text-sm text-[var(--color-text-muted)]">
           Email
@@ -108,7 +108,7 @@ export function AuthPage() {
 
       <div
         className="animate-fade-in-up flex items-center gap-3 text-xs text-[var(--color-text-faint)]"
-        style={{ animationDelay: '240ms' }}
+        style={{ animationDelay: '100ms' }}
       >
         <div className="h-px flex-1 bg-[var(--color-border)]" />
         or
@@ -119,7 +119,7 @@ export function AuthPage() {
         type="button"
         onClick={handleGoogleSignIn}
         className="animate-fade-in-up flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] py-3 text-sm font-semibold text-[var(--color-text)] transition-colors hover:bg-[var(--color-surface-2)]"
-        style={{ animationDelay: '330ms' }}
+        style={{ animationDelay: '140ms' }}
       >
         <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
           <path
@@ -150,7 +150,7 @@ export function AuthPage() {
           setInfoMessage(null)
         }}
         className="animate-fade-in-up cursor-pointer text-sm text-[var(--color-text-faint)]"
-        style={{ animationDelay: '420ms' }}
+        style={{ animationDelay: '180ms' }}
       >
         {mode === 'signup' ? 'Already have an account? Sign in' : "New here? Create an account"}
       </button>
