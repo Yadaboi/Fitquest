@@ -30,21 +30,21 @@ export function CoachPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-xl font-semibold text-[var(--color-text)]">Coach</h1>
+      <h1 className="text-xl font-semibold text-text">Coach</h1>
 
       <section className="flex flex-col gap-3">
         {isLoading ? (
-          <p className="text-sm text-[var(--color-text-muted)]">Loading your conversation...</p>
+          <p className="text-sm text-text-muted">Loading your conversation...</p>
         ) : !messages || messages.length === 0 ? (
-          <div className="flex flex-col items-start gap-3 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
-            <p className="text-sm text-[var(--color-text-muted)]">
-              Ask your coach anything, or just say hey. The more you log, the better it gets to
-              know your training and can tailor its advice to you.
+          <div className="flex flex-col items-start gap-3 rounded-2xl border border-border bg-surface p-4">
+            <p className="text-sm text-text-muted">
+              Ask your coach anything, or just say hey. The more you log, the better it gets to know
+              your training and can tailor its advice to you.
             </p>
             <button
               type="button"
               onClick={() => navigate('/train')}
-              className="text-xs font-medium text-[var(--color-accent)]"
+              className="text-xs font-medium text-accent"
             >
               Log a workout →
             </button>
@@ -57,7 +57,7 @@ export function CoachPage() {
                 className={'flex flex-col ' + (msg.role === 'user' ? 'items-end' : 'items-start')}
               >
                 {msg.source === 'post_workout' && msg.role === 'assistant' && (
-                  <span className="mb-1 text-[10px] font-medium uppercase tracking-wide text-[var(--color-text-faint)]">
+                  <span className="mb-1 text-[10px] font-medium uppercase tracking-wide text-text-faint">
                     Check-in
                   </span>
                 )}
@@ -65,8 +65,8 @@ export function CoachPage() {
                   className={
                     'max-w-[85%] rounded-2xl px-3 py-2 text-sm ' +
                     (msg.role === 'user'
-                      ? 'bg-[var(--color-accent)] text-[var(--color-accent-foreground)]'
-                      : 'border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)]')
+                      ? 'bg-accent text-accent-foreground'
+                      : 'border border-border bg-surface text-text')
                   }
                 >
                   {msg.content}
@@ -76,11 +76,9 @@ export function CoachPage() {
           </ul>
         )}
 
-        {sendMessage.isPending && (
-          <p className="text-sm text-[var(--color-text-faint)]">Coach is thinking...</p>
-        )}
+        {sendMessage.isPending && <p className="text-sm text-text-faint">Coach is thinking...</p>}
 
-        {errorMessage && <p className="text-xs text-[var(--color-danger)]">{errorMessage}</p>}
+        {errorMessage && <p className="text-xs text-danger">{errorMessage}</p>}
       </section>
 
       <form onSubmit={handleSend} className="flex gap-2">
@@ -89,12 +87,12 @@ export function CoachPage() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask your coach..."
-          className="flex-1 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-2)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-faint)]"
+          className="flex-1 rounded-lg border border-border bg-surface-2 px-3 py-2 text-sm text-text placeholder:text-text-faint"
         />
         <button
           type="submit"
           disabled={sendMessage.isPending || !input.trim()}
-          className="rounded-lg bg-[var(--color-accent)] px-4 py-2 text-sm font-semibold text-[var(--color-accent-foreground)] disabled:opacity-40"
+          className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground disabled:opacity-40"
         >
           {sendMessage.isPending ? 'Sending...' : 'Send'}
         </button>

@@ -5,7 +5,7 @@ import type { LoggedEntry } from '../../types/domain'
 export function LoggedEntriesTable({ entries }: { entries: LoggedEntry[] }) {
   if (entries.length === 0) {
     return (
-      <p className="text-sm text-[var(--color-text-muted)]">
+      <p className="text-sm text-text-muted">
         Nothing logged yet — use the form above to add your first entry.
       </p>
     )
@@ -18,12 +18,10 @@ export function LoggedEntriesTable({ entries }: { entries: LoggedEntry[] }) {
           key={entry.id}
           className={
             'flex items-center justify-between rounded-lg border px-3 py-2 text-sm ' +
-            (entry.isPr
-              ? 'border-[var(--color-celebration)] text-[var(--color-celebration)]'
-              : 'border-[var(--color-border)] text-[var(--color-text-muted)]')
+            (entry.isPr ? 'border-celebration text-celebration' : 'border-border text-text-muted')
           }
         >
-          <span className="font-medium text-[var(--color-text)]">{entry.exerciseName}</span>
+          <span className="font-medium text-text">{entry.exerciseName}</span>
           <span className="tabular-nums">
             {entry.entryType === 'strength'
               ? entry.weight > 0

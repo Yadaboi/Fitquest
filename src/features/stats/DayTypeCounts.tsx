@@ -7,12 +7,10 @@ export function DayTypeCounts({ counts }: { counts: Record<DayType, number> }) {
       {DAY_TYPES.map((dayType) => (
         <div
           key={dayType}
-          className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-center"
+          className="rounded-xl border border-border bg-surface px-3 py-2 text-center"
         >
-          <p className="text-lg font-semibold tabular-nums text-[var(--color-text)]">
-            {counts[dayType]}
-          </p>
-          <p className="text-xs text-[var(--color-text-faint)]">{DAY_TYPE_LABELS[dayType]}</p>
+          <p className="text-lg font-semibold tabular-nums text-text">{counts[dayType]}</p>
+          <p className="text-xs text-text-faint">{DAY_TYPE_LABELS[dayType]}</p>
         </div>
       ))}
     </div>

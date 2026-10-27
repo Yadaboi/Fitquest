@@ -36,10 +36,7 @@ export function ProfilePage() {
 
   const { level } = getLevelProgress(totalXp)
   const rankTitle = getRankTitle(level)
-  const achievementStats = useMemo(
-    () => computeStats(completedWorkouts ?? []),
-    [completedWorkouts],
-  )
+  const achievementStats = useMemo(() => computeStats(completedWorkouts ?? []), [completedWorkouts])
   const unlockedAtByAchievement = useMemo(
     () => new Map((unlockedAchievements ?? []).map((row) => [row.achievement_id, row.unlocked_at])),
     [unlockedAchievements],
@@ -62,26 +59,22 @@ export function ProfilePage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <header className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
-        <p className="text-xs text-[var(--color-text-faint)]">Level {level}</p>
-        <h1 className="mt-0.5 text-xl font-semibold text-[var(--color-celebration)]">
-          {rankTitle}
-        </h1>
-        <p className="mt-1 text-xs text-[var(--color-text-muted)]">{streakWeeks} week streak</p>
+      <header className="rounded-2xl border border-border bg-surface p-4">
+        <p className="text-xs text-text-faint">Level {level}</p>
+        <h1 className="mt-0.5 text-xl font-semibold text-celebration">{rankTitle}</h1>
+        <p className="mt-1 text-xs text-text-muted">{streakWeeks} week streak</p>
       </header>
 
-      <section className="flex items-center justify-between rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+      <section className="flex items-center justify-between rounded-2xl border border-border bg-surface p-4">
         <div>
-          <p className="text-sm font-medium text-[var(--color-text)]">Streak shields</p>
-          <p className="text-xs text-[var(--color-text-faint)]">
-            Protects a missed weekly goal automatically
-          </p>
+          <p className="text-sm font-medium text-text">Streak shields</p>
+          <p className="text-xs text-text-faint">Protects a missed weekly goal automatically</p>
         </div>
-        <span className="text-2xl font-bold text-[var(--color-accent)]">{shieldCount}</span>
+        <span className="text-2xl font-bold text-accent">{shieldCount}</span>
       </section>
 
       <section className="flex flex-col gap-3">
-        <p className="text-xs font-medium text-[var(--color-text-faint)]">Achievements</p>
+        <p className="text-xs font-medium text-text-faint">Achievements</p>
         {ACHIEVEMENT_DEFINITIONS.map((definition) => (
           <AchievementCard
             key={definition.id}
@@ -92,17 +85,17 @@ export function ProfilePage() {
         ))}
       </section>
 
-      <section className="flex flex-col gap-3 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
-        <p className="text-xs font-medium text-[var(--color-text-faint)]">Recent activity</p>
+      <section className="flex flex-col gap-3 rounded-2xl border border-border bg-surface p-4">
+        <p className="text-xs font-medium text-text-faint">Recent activity</p>
         <RecentActivity events={xpEvents ?? []} />
       </section>
 
-      <section className="flex flex-col gap-4 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
-        <p className="text-xs font-medium text-[var(--color-text-faint)]">Settings</p>
+      <section className="flex flex-col gap-4 rounded-2xl border border-border bg-surface p-4">
+        <p className="text-xs font-medium text-text-faint">Settings</p>
 
         <div className="flex flex-col gap-2">
-          <span className="text-sm text-[var(--color-text-muted)]">Display name</span>
-          <p className="text-xs text-[var(--color-text-faint)]">Shown to friends instead of your email.</p>
+          <span className="text-sm text-text-muted">Display name</span>
+          <p className="text-xs text-text-faint">Shown to friends instead of your email.</p>
           <div className="flex gap-2">
             <input
               type="text"
@@ -110,13 +103,13 @@ export function ProfilePage() {
               onChange={(e) => setDisplayNameInput(e.target.value)}
               maxLength={40}
               placeholder="Add a name"
-              className="flex-1 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-2)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-faint)]"
+              className="flex-1 rounded-lg border border-border bg-surface-2 px-3 py-2 text-sm text-text placeholder:text-text-faint"
             />
             <button
               type="button"
               onClick={handleSaveDisplayName}
               disabled={displayNameInput.trim() === (profile?.display_name ?? '')}
-              className="rounded-lg bg-[var(--color-accent)] px-3 py-2 text-sm font-semibold text-[var(--color-accent-foreground)] disabled:opacity-40"
+              className="rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-accent-foreground disabled:opacity-40"
             >
               Save
             </button>
@@ -124,14 +117,14 @@ export function ProfilePage() {
         </div>
 
         <div className="flex items-center justify-between text-sm">
-          <span className="text-[var(--color-text-muted)]">Experience level</span>
-          <span className="text-[var(--color-text)]">
+          <span className="text-text-muted">Experience level</span>
+          <span className="text-text">
             {experienceLevel === 'new' ? 'New to the gym' : 'Been before'}
           </span>
         </div>
 
         <div className="flex flex-col gap-2">
-          <span className="text-sm text-[var(--color-text-muted)]">Weekly goal</span>
+          <span className="text-sm text-text-muted">Weekly goal</span>
           <Stepper
             label="Weekly goal"
             value={weeklyGoal}
@@ -145,7 +138,7 @@ export function ProfilePage() {
         <button
           type="button"
           onClick={() => supabase.auth.signOut()}
-          className="self-start rounded-lg border border-[var(--color-border)] px-3 py-2 text-xs text-[var(--color-text-faint)]"
+          className="self-start rounded-lg border border-border px-3 py-2 text-xs text-text-faint"
         >
           Sign out
         </button>

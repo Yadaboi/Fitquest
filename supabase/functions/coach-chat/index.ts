@@ -80,7 +80,8 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json()
-    const trigger: 'chat' | 'post_workout' = body?.trigger === 'post_workout' ? 'post_workout' : 'chat'
+    const trigger: 'chat' | 'post_workout' =
+      body?.trigger === 'post_workout' ? 'post_workout' : 'chat'
 
     let message: string | null = null
     let event: PostWorkoutEvent | null = null
@@ -103,7 +104,10 @@ Deno.serve(async (req) => {
     const apiKey = Deno.env.get('ANTHROPIC_API_KEY')
     if (!apiKey) {
       return jsonResponse(
-        { error: "The AI coach isn't configured yet — an Anthropic API key needs to be added to this project." },
+        {
+          error:
+            "The AI coach isn't configured yet — an Anthropic API key needs to be added to this project.",
+        },
         500,
       )
     }
@@ -167,23 +171,33 @@ Deno.serve(async (req) => {
       }
     }
 
-    const [{ data: workoutsData }, { data: profile }, { data: playerStats }, { data: historyRows }] =
-      await Promise.all([
-        userClient
-          .from('workouts')
-          .select('id, date, day_type, sets(id, exercise_name, entry_type, weight, reps, duration_minutes, is_pr)')
-          .eq('user_id', user.id)
-          .not('completed_at', 'is', null)
-          .order('date', { ascending: true }),
-        userClient.from('profiles').select('weekly_goal').eq('id', user.id).single(),
-        userClient.from('player_stats').select('total_xp, streak_weeks, shield_count').eq('user_id', user.id).single(),
-        userClient
-          .from('coach_messages')
-          .select('role, content')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false })
-          .limit(COACH_MAX_HISTORY_MESSAGES),
-      ])
+    const [
+      { data: workoutsData },
+      { data: profile },
+      { data: playerStats },
+      { data: historyRows },
+    ] = await Promise.all([
+      userClient
+        .from('workouts')
+        .select(
+          'id, date, day_type, sets(id, exercise_name, entry_type, weight, reps, duration_minutes, is_pr)',
+        )
+        .eq('user_id', user.id)
+        .not('completed_at', 'is', null)
+        .order('date', { ascending: true }),
+      userClient.from('profiles').select('weekly_goal').eq('id', user.id).single(),
+      userClient
+        .from('player_stats')
+        .select('total_xp, streak_weeks, shield_count')
+        .eq('user_id', user.id)
+        .single(),
+      userClient
+        .from('coach_messages')
+        .select('role, content')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(COACH_MAX_HISTORY_MESSAGES),
+    ])
 
     const workouts = (workoutsData ?? []) as CoachWorkout[]
     const facts = buildCoachFacts(

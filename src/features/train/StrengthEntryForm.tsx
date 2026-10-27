@@ -36,8 +36,8 @@ export function StrengthEntryForm({
   }
 
   return (
-    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3">
-      <p className="mb-2 text-xs text-[var(--color-text-faint)]">Log a set</p>
+    <div className="rounded-xl border border-border bg-surface p-3">
+      <p className="mb-2 text-xs text-text-faint">Log a set</p>
       <input
         type="text"
         list={DATALIST_ID}
@@ -45,7 +45,7 @@ export function StrengthEntryForm({
         onChange={(e) => setName(e.target.value)}
         onBlur={(e) => applyPrefill(e.target.value)}
         placeholder="Exercise name"
-        className="mb-2 w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-2)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-faint)]"
+        className="mb-2 w-full rounded-lg border border-border bg-surface-2 px-3 py-2 text-sm text-text placeholder:text-text-faint"
       />
       <datalist id={DATALIST_ID}>
         {suggestions.map((s) => (
@@ -60,7 +60,7 @@ export function StrengthEntryForm({
         type="button"
         onClick={handleLogSet}
         disabled={!name.trim()}
-        className="mt-3 w-full rounded-lg bg-[var(--color-accent)] py-2.5 text-sm font-semibold text-[var(--color-accent-foreground)] transition-colors hover:bg-[var(--color-accent-hover)] active:scale-[0.99] disabled:opacity-40"
+        className="mt-3 w-full rounded-lg bg-accent py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent-hover active:scale-[0.99] disabled:opacity-40"
       >
         Log Set
       </button>

@@ -10,7 +10,7 @@ const SOURCE_LABELS: Record<XpEventRow['source'], string> = {
 export function RecentActivity({ events }: { events: XpEventRow[] }) {
   if (events.length === 0) {
     return (
-      <p className="text-sm text-[var(--color-text-muted)]">
+      <p className="text-sm text-text-muted">
         Finish a workout to start seeing your XP history here.
       </p>
     )
@@ -19,12 +19,9 @@ export function RecentActivity({ events }: { events: XpEventRow[] }) {
   return (
     <ul className="flex flex-col gap-1.5">
       {events.map((event) => (
-        <li
-          key={event.id}
-          className="flex items-center justify-between text-sm text-[var(--color-text-muted)]"
-        >
+        <li key={event.id} className="flex items-center justify-between text-sm text-text-muted">
           <span>{SOURCE_LABELS[event.source]}</span>
-          <span className="font-medium text-[var(--color-accent)]">+{event.amount} XP</span>
+          <span className="font-medium text-accent">+{event.amount} XP</span>
         </li>
       ))}
     </ul>

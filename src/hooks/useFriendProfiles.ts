@@ -25,7 +25,10 @@ export function useFriendProfiles(otherUserIds: string[]) {
       const [{ data: profiles, error: profilesError }, { data: stats, error: statsError }] =
         await Promise.all([
           supabase.from('profiles').select('id, display_name').in('id', sortedIds),
-          supabase.from('player_stats').select('user_id, total_xp, streak_weeks').in('user_id', sortedIds),
+          supabase
+            .from('player_stats')
+            .select('user_id, total_xp, streak_weeks')
+            .in('user_id', sortedIds),
         ])
       if (profilesError) throw profilesError
       if (statsError) throw statsError

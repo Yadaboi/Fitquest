@@ -17,7 +17,7 @@ export function DayTypePicker({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor="day-type-select" className="text-xs font-medium text-[var(--color-text-faint)]">
+      <label htmlFor="day-type-select" className="text-xs font-medium text-text-faint">
         Today&apos;s focus
       </label>
       <select
@@ -25,7 +25,7 @@ export function DayTypePicker({
         value={value ?? ''}
         disabled={locked}
         onChange={(e) => onChange(e.target.value as DayType)}
-        className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-2)] px-3 py-2.5 text-sm font-medium text-[var(--color-text)] disabled:opacity-50"
+        className="w-full rounded-lg border border-border bg-surface-2 px-3 py-2.5 text-sm font-medium text-text disabled:opacity-50"
       >
         <option value="" disabled>
           Choose a day type

@@ -23,7 +23,9 @@ export function useWorkoutHistory(userId: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('workouts')
-        .select('id, date, day_type, sets(id, exercise_name, entry_type, weight, reps, duration_minutes, is_pr)')
+        .select(
+          'id, date, day_type, sets(id, exercise_name, entry_type, weight, reps, duration_minutes, is_pr)',
+        )
         .eq('user_id', userId)
         .not('completed_at', 'is', null)
         .order('date', { ascending: true })

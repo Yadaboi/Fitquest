@@ -18,7 +18,7 @@ export function XpTickStack({ ticks }: { ticks: XpTick[] }) {
             animate={{ opacity: 1, y: -12, scale: 1 }}
             exit={{ opacity: 0, y: -28 }}
             transition={{ duration: 0.6, ease: 'easeOut' }}
-            className="rounded-full bg-[var(--color-accent)] px-2.5 py-1 text-xs font-semibold text-[var(--color-accent-foreground)] shadow-lg"
+            className="rounded-full bg-accent px-2.5 py-1 text-xs font-semibold text-accent-foreground shadow-lg"
           >
             +{tick.amount} XP
           </motion.span>

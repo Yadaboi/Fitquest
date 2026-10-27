@@ -12,18 +12,18 @@ import { PersonalBests } from './PersonalBests'
 export function StatsPage() {
   const { session } = useAuth()
   const { data: completedWorkouts } = useWorkoutHistory(session!.user.id)
-  const workouts = completedWorkouts ?? []
+  const workouts = useMemo(() => completedWorkouts ?? [], [completedWorkouts])
 
   const dayTypeCounts = useMemo(() => getDayTypeCounts(workouts), [workouts])
   const trackedBests = useMemo(() => getTrackedBests(workouts), [workouts])
 
   return (
     <div className="flex flex-col gap-5">
-      <h1 className="text-xl font-semibold text-[var(--color-text)]">Stats</h1>
+      <h1 className="text-xl font-semibold text-text">Stats</h1>
 
-      <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+      <section className="rounded-2xl border border-border bg-surface p-4">
         {workouts.length === 0 ? (
-          <p className="text-sm text-[var(--color-text-muted)]">
+          <p className="text-sm text-text-muted">
             Your consistency heatmap will fill in as you log workouts.
           </p>
         ) : (
@@ -32,12 +32,12 @@ export function StatsPage() {
       </section>
 
       <section className="flex flex-col gap-3">
-        <p className="text-xs font-medium text-[var(--color-text-faint)]">Training split</p>
+        <p className="text-xs font-medium text-text-faint">Training split</p>
         <DayTypeCounts counts={dayTypeCounts} />
       </section>
 
       <section className="flex flex-col gap-3">
-        <p className="text-xs font-medium text-[var(--color-text-faint)]">Personal bests</p>
+        <p className="text-xs font-medium text-text-faint">Personal bests</p>
         <PersonalBests bests={trackedBests} />
       </section>
     </div>

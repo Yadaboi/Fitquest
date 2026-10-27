@@ -68,8 +68,8 @@ export function ConsistencyHeatmap({ workouts }: { workouts: HistoryWorkout[] })
   return (
     <div>
       <div className="flex items-baseline justify-between">
-        <p className="text-xs font-medium text-[var(--color-text-faint)]">Last 10 weeks</p>
-        <p className="text-xs text-[var(--color-text-faint)]">{totalActiveDays} active days</p>
+        <p className="text-xs font-medium text-text-faint">Last 10 weeks</p>
+        <p className="text-xs text-text-faint">{totalActiveDays} active days</p>
       </div>
 
       <div className="mt-2 flex flex-col gap-1">
@@ -98,21 +98,17 @@ export function ConsistencyHeatmap({ workouts }: { workouts: HistoryWorkout[] })
       </div>
 
       <div className="mt-3 flex items-center justify-between">
-        <p className="min-h-[1rem] text-xs text-[var(--color-text-muted)]">
+        <p className="min-h-[1rem] text-xs text-text-muted">
           {activeCell
             ? `${activeCell.date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} — ${activeCell.count} sets`
             : 'Hover or tap a day for details'}
         </p>
         <div className="flex items-center gap-1">
-          <span className="text-xs text-[var(--color-text-faint)]">Less</span>
+          <span className="text-xs text-text-faint">Less</span>
           {HEAT_STEPS.map((color) => (
-            <span
-              key={color}
-              className="h-2.5 w-2.5 rounded-sm"
-              style={{ background: color }}
-            />
+            <span key={color} className="h-2.5 w-2.5 rounded-sm" style={{ background: color }} />
           ))}
-          <span className="text-xs text-[var(--color-text-faint)]">More</span>
+          <span className="text-xs text-text-faint">More</span>
         </div>
       </div>
     </div>

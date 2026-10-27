@@ -21,15 +21,15 @@ export function CardioEntryForm({
   }
 
   return (
-    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3">
-      <p className="mb-2 text-xs text-[var(--color-text-faint)]">Log cardio</p>
+    <div className="rounded-xl border border-border bg-surface p-3">
+      <p className="mb-2 text-xs text-text-faint">Log cardio</p>
       <input
         type="text"
         list={DATALIST_ID}
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder="Activity (e.g. Running)"
-        className="mb-2 w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-2)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-faint)]"
+        className="mb-2 w-full rounded-lg border border-border bg-surface-2 px-3 py-2 text-sm text-text placeholder:text-text-faint"
       />
       <datalist id={DATALIST_ID}>
         {suggestions.map((s) => (
@@ -38,12 +38,19 @@ export function CardioEntryForm({
       </datalist>
       {/* 1-minute steps, not 5 — coarser increments made it impossible to
           show meaningful progress on a timed entry like "Mile Run". */}
-      <Stepper label="Duration" value={duration} step={1} unit="min" onChange={setDuration} min={1} />
+      <Stepper
+        label="Duration"
+        value={duration}
+        step={1}
+        unit="min"
+        onChange={setDuration}
+        min={1}
+      />
       <button
         type="button"
         onClick={handleLog}
         disabled={!name.trim()}
-        className="mt-3 w-full rounded-lg bg-[var(--color-accent)] py-2.5 text-sm font-semibold text-[var(--color-accent-foreground)] transition-colors hover:bg-[var(--color-accent-hover)] active:scale-[0.99] disabled:opacity-40"
+        className="mt-3 w-full rounded-lg bg-accent py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent-hover active:scale-[0.99] disabled:opacity-40"
       >
         Log Cardio
       </button>

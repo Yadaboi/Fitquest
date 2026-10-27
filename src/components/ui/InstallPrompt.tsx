@@ -56,7 +56,7 @@ export function InstallPrompt({ className = '' }: { className?: string }) {
 
   return (
     <section
-      className={`relative overflow-hidden rounded-2xl border border-[var(--color-accent)]/60 p-4 shadow-[0_10px_32px_-12px_var(--color-accent)] ${className}`}
+      className={`relative overflow-hidden rounded-2xl border border-accent/60 p-4 shadow-[0_10px_32px_-12px_var(--color-accent)] ${className}`}
       style={{
         background:
           'radial-gradient(120% 140% at 0% 0%, rgba(124, 108, 240, 0.28) 0%, rgba(124, 108, 240, 0.08) 45%, var(--color-surface) 75%)',
@@ -67,7 +67,7 @@ export function InstallPrompt({ className = '' }: { className?: string }) {
         type="button"
         onClick={dismiss}
         aria-label="Dismiss"
-        className="absolute right-2 top-2 rounded-lg px-2 py-1 text-lg leading-none text-[var(--color-text-faint)] hover:text-[var(--color-text-muted)]"
+        className="absolute right-2 top-2 rounded-lg px-2 py-1 text-lg leading-none text-text-faint hover:text-text-muted"
       >
         ×
       </button>
@@ -81,8 +81,8 @@ export function InstallPrompt({ className = '' }: { className?: string }) {
           className="h-12 w-12 flex-none rounded-xl shadow-[0_4px_14px_-4px_var(--color-accent)]"
         />
         <div>
-          <p className="text-base font-semibold text-[var(--color-text)]">Take FitQuest with you</p>
-          <p className="mt-0.5 text-sm leading-snug text-[var(--color-text-muted)]">
+          <p className="text-base font-semibold text-text">Take FitQuest with you</p>
+          <p className="mt-0.5 text-sm leading-snug text-text-muted">
             Add it to your home screen.
             <br />
             Opens full-screen, like a real app.
@@ -94,23 +94,22 @@ export function InstallPrompt({ className = '' }: { className?: string }) {
         <button
           type="button"
           onClick={install}
-          className="mt-4 w-full rounded-xl bg-[var(--color-accent)] py-2.5 text-sm font-semibold text-[var(--color-accent-foreground)] transition-colors hover:bg-[var(--color-accent-hover)]"
+          className="mt-4 w-full rounded-xl bg-accent py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent-hover"
         >
           Install FitQuest
         </button>
       ) : (
-        <ol className="mt-4 flex flex-col gap-2 text-sm text-[var(--color-text-muted)]">
+        <ol className="mt-4 flex flex-col gap-2 text-sm text-text-muted">
           <li className="flex items-center gap-2.5">
             <StepNumber n={1} />
             <span>
-              Tap <ShareIcon /> <span className="font-medium text-[var(--color-text)]">Share</span> in
-              your browser
+              Tap <ShareIcon /> <span className="font-medium text-text">Share</span> in your browser
             </span>
           </li>
           <li className="flex items-center gap-2.5">
             <StepNumber n={2} />
             <span>
-              Choose <span className="font-medium text-[var(--color-text)]">Add to Home Screen</span>
+              Choose <span className="font-medium text-text">Add to Home Screen</span>
             </span>
           </li>
         </ol>
@@ -121,7 +120,7 @@ export function InstallPrompt({ className = '' }: { className?: string }) {
 
 function StepNumber({ n }: { n: number }) {
   return (
-    <span className="flex h-6 w-6 flex-none items-center justify-center rounded-full bg-[var(--color-accent)] text-xs font-semibold text-[var(--color-accent-foreground)]">
+    <span className="flex h-6 w-6 flex-none items-center justify-center rounded-full bg-accent text-xs font-semibold text-accent-foreground">
       {n}
     </span>
   )
@@ -139,7 +138,7 @@ function ShareIcon() {
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
-      className="inline -mt-0.5 text-[var(--color-accent)]"
+      className="inline -mt-0.5 text-accent"
     >
       <path d="M12 3v12" />
       <path d="M8 7l4-4 4 4" />

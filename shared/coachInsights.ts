@@ -164,7 +164,11 @@ export function detectPlateaus(
     const daysSinceLastPr = lastPr
       ? Math.floor((today.getTime() - lastPr.getTime()) / MS_PER_DAY)
       : null
-    plateaus.push({ exerciseName: stats.displayName, sessionsInWindow: stats.sessions, daysSinceLastPr })
+    plateaus.push({
+      exerciseName: stats.displayName,
+      sessionsInWindow: stats.sessions,
+      daysSinceLastPr,
+    })
   }
   return plateaus
 }
@@ -223,7 +227,10 @@ export function getConsistencyTrend(
   const recentCutoff = today.getTime() - windowDays * MS_PER_DAY
   const priorCutoff = recentCutoff - windowDays * MS_PER_DAY
 
-  const earliestDate = workouts.reduce((min, w) => Math.min(min, new Date(w.date).getTime()), Infinity)
+  const earliestDate = workouts.reduce(
+    (min, w) => Math.min(min, new Date(w.date).getTime()),
+    Infinity,
+  )
   // Without real history covering the prior window too, the comparison is
   // meaningless (e.g. someone who started 10 days ago would show a fake
   // "0 -> N" trend that's really just "no data yet").

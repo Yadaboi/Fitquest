@@ -1,32 +1,53 @@
-# React + TypeScript + Vite
+# FitQuest
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A strength-training app that plays like a game: earn XP, level up through ranks,
+keep a weekly streak (with shields to protect it), complete quests and chase PRs.
+It also nudges you toward whatever you've been skipping, has an AI coach, and
+lets you add friends.
 
-Currently, two official plugins are available:
+**Live:** https://yadaboi.github.io/Fitquest/ (installable from the browser)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Tech
 
-## React Compiler
+- **App:** React 19 + TypeScript, built with Vite, styled with Tailwind CSS v4
+- **Data:** Supabase (auth, Postgres, edge functions), React Query, Zustand
+- **Installable:** PWA via `vite-plugin-pwa`
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Project layout
 
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```
+src/
+  features/      one folder per screen (home, train, stats, profile, friends, coach, auth, onboarding)
+  components/    shared UI (layout, tab bar, install prompt, celebrations)
+  hooks/         data hooks (React Query + Supabase)
+  lib/           app logic (gamification, quests, recommendations, goals)
+  context/       auth session
+shared/          logic used by both the app and the Supabase edge functions
+supabase/
+  migrations/    database schema, applied in order
+  functions/     edge functions (complete-workout, coach-chat, send-friend-request)
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Colors live as theme tokens in `src/index.css` (`--color-accent`, `--color-surface`, ...)
+and are used as Tailwind classes such as `bg-surface`, `text-text-muted` or `border-accent`.
+
+## Running it locally
+
+1. `npm install`
+2. Copy `.env.example` to `.env.local` and fill in your Supabase URL and anon key
+3. `npm run dev`
+
+## Scripts
+
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Start the dev server |
+| `npm run build` | Type-check and build to `dist/` |
+| `npm run lint` | Lint with oxlint |
+| `npm run format` | Format the code with Prettier |
+
+## Deploying
+
+Pushing to `main` deploys automatically to GitHub Pages
+(`.github/workflows/deploy.yml`). The Supabase URL and anon key come from the
+repo's `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` Actions secrets.

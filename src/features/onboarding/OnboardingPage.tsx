@@ -23,16 +23,12 @@ export function OnboardingPage() {
   return (
     <div className="animate-fade-in-up flex min-h-svh flex-col justify-center gap-8 px-6 py-10">
       <div>
-        <p className="text-sm font-medium text-[var(--color-accent)]">Welcome to FitQuest</p>
-        <h1 className="mt-1 text-2xl font-semibold text-[var(--color-text)]">
-          Every set you log levels you up.
-        </h1>
+        <p className="text-sm font-medium text-accent">Welcome to FitQuest</p>
+        <h1 className="mt-1 text-2xl font-semibold text-text">Every set you log levels you up.</h1>
       </div>
 
       <div className="flex flex-col gap-3">
-        <p className="text-sm font-medium text-[var(--color-text-muted)]">
-          Where are you starting from?
-        </p>
+        <p className="text-sm font-medium text-text-muted">Where are you starting from?</p>
         <div className="flex gap-3">
           {(
             [
@@ -47,8 +43,8 @@ export function OnboardingPage() {
               className={
                 'flex-1 rounded-xl border px-3 py-4 text-sm font-medium transition-colors ' +
                 (experienceLevel === option.value
-                  ? 'border-[var(--color-accent)] bg-[var(--color-accent)]/10 text-[var(--color-text)]'
-                  : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)]')
+                  ? 'border-accent bg-accent/10 text-text'
+                  : 'border-border bg-surface text-text-muted')
               }
             >
               {option.label}
@@ -58,7 +54,7 @@ export function OnboardingPage() {
       </div>
 
       <div className="flex flex-col gap-3">
-        <p className="text-sm font-medium text-[var(--color-text-muted)]">
+        <p className="text-sm font-medium text-text-muted">
           How many workouts a week are you aiming for?
         </p>
         <Stepper
@@ -72,16 +68,14 @@ export function OnboardingPage() {
       </div>
 
       {updateProfile.isError && (
-        <p className="text-sm text-[var(--color-danger)]">
-          Something went wrong saving that — try again.
-        </p>
+        <p className="text-sm text-danger">Something went wrong saving that — try again.</p>
       )}
 
       <button
         type="button"
         onClick={handleStart}
         disabled={!experienceLevel || updateProfile.isPending}
-        className="w-full rounded-xl bg-[var(--color-accent)] py-3 text-sm font-semibold text-[var(--color-accent-foreground)] transition-colors hover:bg-[var(--color-accent-hover)] disabled:opacity-40"
+        className="w-full rounded-xl bg-accent py-3 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent-hover disabled:opacity-40"
       >
         {updateProfile.isPending ? 'Saving...' : "Let's go"}
       </button>

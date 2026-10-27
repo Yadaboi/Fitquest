@@ -44,9 +44,9 @@ function formatMileTime(minutes: number): string {
 }
 
 export function formatCoachFacts(facts: CoachFacts): string {
-  const splitLine = DAY_TYPES.map((d: DayType) => `${DAY_TYPE_LABELS[d]} ${facts.dayTypeCounts[d]}`).join(
-    ', ',
-  )
+  const splitLine = DAY_TYPES.map(
+    (d: DayType) => `${DAY_TYPE_LABELS[d]} ${facts.dayTypeCounts[d]}`,
+  ).join(', ')
 
   const overdueLine = facts.focusRecommendation
     ? facts.focusRecommendation.message
@@ -116,7 +116,8 @@ export function formatPostWorkoutEvent(event: PostWorkoutEvent): string {
           .join('; ')
       : 'none'
 
-  const questLine = event.completedQuestTitles.length > 0 ? event.completedQuestTitles.join('; ') : 'none'
+  const questLine =
+    event.completedQuestTitles.length > 0 ? event.completedQuestTitles.join('; ') : 'none'
 
   return `Just happened — this is why you're speaking first, before they've asked you anything:
 - Finished a ${DAY_TYPE_LABELS[event.dayType]} workout: ${event.setCount} logged

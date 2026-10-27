@@ -46,7 +46,11 @@ export function getTrackedBests(workouts: CoachWorkout[]): TrackedBests {
         if (!current || set.weight > current.weight) {
           bestByLift[liftKey] = { weight: set.weight, reps: set.reps }
         }
-      } else if (set.entry_type === 'cardio' && set.duration_minutes != null && key === MILE_RUN_KEY) {
+      } else if (
+        set.entry_type === 'cardio' &&
+        set.duration_minutes != null &&
+        key === MILE_RUN_KEY
+      ) {
         if (mileRunMinutes === null || set.duration_minutes < mileRunMinutes) {
           mileRunMinutes = set.duration_minutes
         }

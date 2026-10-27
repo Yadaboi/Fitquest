@@ -3,7 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
-import { XP_PER_SET, PR_BONUS, QUEST_MIN_DISTINCT_EXERCISES, QUEST_MIN_CARDIO_MINUTES } from '../../../shared/gamification-constants'
+import {
+  XP_PER_SET,
+  PR_BONUS,
+  QUEST_MIN_DISTINCT_EXERCISES,
+  QUEST_MIN_CARDIO_MINUTES,
+} from '../../../shared/gamification-constants'
 import { ACHIEVEMENT_DEFINITIONS, TIER_NAMES } from '../../../shared/achievements'
 import { normalizeExerciseName } from '../../../shared/exercise-name'
 import {
@@ -20,7 +25,13 @@ import { LoggedEntriesTable } from './LoggedEntriesTable'
 import { XpTickStack, type XpTick } from '../../components/ui/XpTickStack'
 import { Celebration, type CelebrationData } from '../../components/ui/Celebration'
 import { RecommendationBanner } from '../../components/ui/RecommendationBanner'
-import type { DayType, LoggedCardioEntry, LoggedEntry, LoggedStrengthEntry, SessionQuest } from '../../types/domain'
+import type {
+  DayType,
+  LoggedCardioEntry,
+  LoggedEntry,
+  LoggedStrengthEntry,
+  SessionQuest,
+} from '../../types/domain'
 
 let tickIdCounter = 0
 
@@ -38,8 +49,14 @@ export function TrainPage() {
   )
   const lastCardioByName = useMemo(() => getLastCardioByActivityName(history ?? []), [history])
 
-  const strengthSuggestions = useMemo(() => distinctNamesMostRecentFirst(history ?? [], 'strength'), [history])
-  const cardioSuggestions = useMemo(() => distinctNamesMostRecentFirst(history ?? [], 'cardio'), [history])
+  const strengthSuggestions = useMemo(
+    () => distinctNamesMostRecentFirst(history ?? [], 'strength'),
+    [history],
+  )
+  const cardioSuggestions = useMemo(
+    () => distinctNamesMostRecentFirst(history ?? [], 'cardio'),
+    [history],
+  )
 
   const [dayType, setDayType] = useState<DayType | null>(null)
   const [workoutId, setWorkoutId] = useState<string | null>(null)
@@ -299,27 +316,27 @@ export function TrainPage() {
       <Celebration data={celebrationQueue[0] ?? null} onDismiss={handleDismissCelebration} />
 
       <header>
-        <h1 className="text-xl font-semibold text-[var(--color-text)]">
+        <h1 className="text-xl font-semibold text-text">
           {dayType ? DAY_TYPE_LABELS[dayType] : 'Choose today’s focus'}
         </h1>
-        <p className="text-sm text-[var(--color-text-muted)]">{entries.length} logged</p>
+        <p className="text-sm text-text-muted">{entries.length} logged</p>
       </header>
 
       <button
         type="button"
         onClick={() => navigate('/coach')}
-        className="flex items-center justify-between rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-left transition-colors hover:bg-[var(--color-surface-2)]"
+        className="flex items-center justify-between rounded-2xl border border-border bg-surface px-4 py-3 text-left transition-colors hover:bg-surface-2"
       >
-        <span className="text-sm text-[var(--color-text-muted)]">
+        <span className="text-sm text-text-muted">
           Not sure about form, pacing, or what to do next?{' '}
-          <span className="text-[var(--color-text)]">Ask your coach</span> — every set you log
-          helps it know you better.
+          <span className="text-text">Ask your coach</span> — every set you log helps it know you
+          better.
         </span>
-        <span className="text-[var(--color-accent)]">→</span>
+        <span className="text-accent">→</span>
       </button>
 
       {errorMessage && (
-        <p className="rounded-lg border border-[var(--color-danger)] px-3 py-2 text-sm text-[var(--color-danger)]">
+        <p className="rounded-lg border border-danger px-3 py-2 text-sm text-danger">
           {errorMessage}
         </p>
       )}
@@ -333,17 +350,15 @@ export function TrainPage() {
         locked={workoutId !== null}
       />
 
-      <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
-        <p className="mb-2 text-xs font-medium text-[var(--color-text-faint)]">Session quests</p>
+      <section className="rounded-2xl border border-border bg-surface p-4">
+        <p className="mb-2 text-xs font-medium text-text-faint">Session quests</p>
         <ul className="flex flex-col gap-1.5">
           {quests.map((quest) => (
             <li
               key={quest.id}
               className={
                 'text-sm ' +
-                (quest.isComplete
-                  ? 'text-[var(--color-celebration)] line-through'
-                  : 'text-[var(--color-text-muted)]')
+                (quest.isComplete ? 'text-celebration line-through' : 'text-text-muted')
               }
             >
               {quest.isComplete ? '✓ ' : '• '}
@@ -354,9 +369,7 @@ export function TrainPage() {
       </section>
 
       {dayType === null && (
-        <p className="text-sm text-[var(--color-text-muted)]">
-          Pick a day type above to start logging.
-        </p>
+        <p className="text-sm text-text-muted">Pick a day type above to start logging.</p>
       )}
 
       {dayType === 'cardio' && (
@@ -377,7 +390,7 @@ export function TrainPage() {
         type="button"
         onClick={handleFinishWorkout}
         disabled={entries.length === 0 || isFinishing}
-        className="mt-2 w-full rounded-xl bg-[var(--color-celebration)] py-3 text-sm font-semibold text-[var(--color-celebration-foreground)] disabled:opacity-40"
+        className="mt-2 w-full rounded-xl bg-celebration py-3 text-sm font-semibold text-celebration-foreground disabled:opacity-40"
       >
         {isFinishing ? 'Finishing...' : 'Finish Workout'}
       </button>

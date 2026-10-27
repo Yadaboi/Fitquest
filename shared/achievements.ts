@@ -85,7 +85,8 @@ export function computeStats(completedWorkouts: AchievementWorkout[]): Achieveme
       (sum, s) => sum + ((s.weight ?? 0) > 0 ? (s.weight ?? 0) * (s.reps ?? 0) : (s.reps ?? 0)),
       0,
     ),
-    distinctExercises: new Set(strengthSets.map((s) => normalizeExerciseName(s.exercise_name))).size,
+    distinctExercises: new Set(strengthSets.map((s) => normalizeExerciseName(s.exercise_name)))
+      .size,
   }
 }
 

@@ -260,9 +260,7 @@ Deno.serve(async (req) => {
       .eq('user_id', user.id)
       .not('completed_at', 'is', null)
 
-    const achievementStats = computeStats(
-      (achievementWorkouts ?? []) as AchievementWorkout[],
-    )
+    const achievementStats = computeStats((achievementWorkouts ?? []) as AchievementWorkout[])
 
     const { data: existingUnlocks } = await userClient
       .from('user_achievements')

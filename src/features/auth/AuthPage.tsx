@@ -57,8 +57,8 @@ export function AuthPage() {
       <InstallPrompt className="animate-fade-in-up" />
 
       <div className="animate-fade-in-up">
-        <p className="text-sm font-medium text-[var(--color-accent)]">FitQuest</p>
-        <h1 className="mt-1 text-2xl font-semibold text-[var(--color-text)]">
+        <p className="text-sm font-medium text-accent">FitQuest</p>
+        <h1 className="mt-1 text-2xl font-semibold text-text">
           {mode === 'signup' ? 'Create your account' : 'Welcome back'}
         </h1>
       </div>
@@ -69,56 +69,56 @@ export function AuthPage() {
         className="animate-fade-in-up flex flex-col gap-4"
         style={{ animationDelay: '50ms' }}
       >
-        <label className="flex flex-col gap-1.5 text-sm text-[var(--color-text-muted)]">
+        <label className="flex flex-col gap-1.5 text-sm text-text-muted">
           Email
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-text)] outline-none focus:border-[var(--color-accent)]"
+            className="rounded-xl border border-border bg-surface px-3 py-2.5 text-text outline-none focus:border-accent"
           />
         </label>
 
-        <label className="flex flex-col gap-1.5 text-sm text-[var(--color-text-muted)]">
+        <label className="flex flex-col gap-1.5 text-sm text-text-muted">
           Password
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-text)] outline-none focus:border-[var(--color-accent)]"
+            className="rounded-xl border border-border bg-surface px-3 py-2.5 text-text outline-none focus:border-accent"
           />
           {mode === 'signup' && (
-            <span className="text-xs text-[var(--color-text-faint)]">
+            <span className="text-xs text-text-faint">
               At least {MIN_PASSWORD_LENGTH} characters.
             </span>
           )}
         </label>
 
-        {error && <p className="text-sm text-[var(--color-danger)]">{error}</p>}
-        {infoMessage && <p className="text-sm text-[var(--color-success)]">{infoMessage}</p>}
+        {error && <p className="text-sm text-danger">{error}</p>}
+        {infoMessage && <p className="text-sm text-success">{infoMessage}</p>}
 
         <button
           type="submit"
           disabled={isSubmitting}
-          className="mt-2 w-full rounded-xl bg-[var(--color-accent)] py-3 text-sm font-semibold text-[var(--color-accent-foreground)] transition-colors hover:bg-[var(--color-accent-hover)] disabled:cursor-not-allowed disabled:opacity-50"
+          className="mt-2 w-full rounded-xl bg-accent py-3 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isSubmitting ? 'Please wait...' : mode === 'signup' ? 'Sign up' : 'Sign in'}
         </button>
       </form>
 
       <div
-        className="animate-fade-in-up flex items-center gap-3 text-xs text-[var(--color-text-faint)]"
+        className="animate-fade-in-up flex items-center gap-3 text-xs text-text-faint"
         style={{ animationDelay: '100ms' }}
       >
-        <div className="h-px flex-1 bg-[var(--color-border)]" />
+        <div className="h-px flex-1 bg-border" />
         or
-        <div className="h-px flex-1 bg-[var(--color-border)]" />
+        <div className="h-px flex-1 bg-border" />
       </div>
 
       <button
         type="button"
         onClick={handleGoogleSignIn}
-        className="animate-fade-in-up flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] py-3 text-sm font-semibold text-[var(--color-text)] transition-colors hover:bg-[var(--color-surface-2)]"
+        className="animate-fade-in-up flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-surface py-3 text-sm font-semibold text-text transition-colors hover:bg-surface-2"
         style={{ animationDelay: '140ms' }}
       >
         <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
@@ -149,10 +149,10 @@ export function AuthPage() {
           setError(null)
           setInfoMessage(null)
         }}
-        className="animate-fade-in-up cursor-pointer text-sm text-[var(--color-text-faint)]"
+        className="animate-fade-in-up cursor-pointer text-sm text-text-faint"
         style={{ animationDelay: '180ms' }}
       >
-        {mode === 'signup' ? 'Already have an account? Sign in' : "New here? Create an account"}
+        {mode === 'signup' ? 'Already have an account? Sign in' : 'New here? Create an account'}
       </button>
     </div>
   )

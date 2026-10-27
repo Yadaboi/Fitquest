@@ -7,13 +7,27 @@ import { useProfile } from './hooks/useProfile'
 
 // Everything behind sign-in is loaded on demand, so a first-time visitor only
 // downloads what the sign-up screen needs and sees it sooner.
-const AppShell = lazy(() => import('./components/layout/AppShell').then((m) => ({ default: m.AppShell })))
-const HomePage = lazy(() => import('./features/home/HomePage').then((m) => ({ default: m.HomePage })))
-const TrainPage = lazy(() => import('./features/train/TrainPage').then((m) => ({ default: m.TrainPage })))
-const StatsPage = lazy(() => import('./features/stats/StatsPage').then((m) => ({ default: m.StatsPage })))
-const ProfilePage = lazy(() => import('./features/profile/ProfilePage').then((m) => ({ default: m.ProfilePage })))
-const FriendsPage = lazy(() => import('./features/friends/FriendsPage').then((m) => ({ default: m.FriendsPage })))
-const CoachPage = lazy(() => import('./features/coach/CoachPage').then((m) => ({ default: m.CoachPage })))
+const AppShell = lazy(() =>
+  import('./components/layout/AppShell').then((m) => ({ default: m.AppShell })),
+)
+const HomePage = lazy(() =>
+  import('./features/home/HomePage').then((m) => ({ default: m.HomePage })),
+)
+const TrainPage = lazy(() =>
+  import('./features/train/TrainPage').then((m) => ({ default: m.TrainPage })),
+)
+const StatsPage = lazy(() =>
+  import('./features/stats/StatsPage').then((m) => ({ default: m.StatsPage })),
+)
+const ProfilePage = lazy(() =>
+  import('./features/profile/ProfilePage').then((m) => ({ default: m.ProfilePage })),
+)
+const FriendsPage = lazy(() =>
+  import('./features/friends/FriendsPage').then((m) => ({ default: m.FriendsPage })),
+)
+const CoachPage = lazy(() =>
+  import('./features/coach/CoachPage').then((m) => ({ default: m.CoachPage })),
+)
 const OnboardingPage = lazy(() =>
   import('./features/onboarding/OnboardingPage').then((m) => ({ default: m.OnboardingPage })),
 )

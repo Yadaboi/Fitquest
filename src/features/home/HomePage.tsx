@@ -34,57 +34,57 @@ export function HomePage() {
   return (
     <div className="flex flex-col gap-6">
       <InstallPrompt />
-      <header className="flex items-center justify-between rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3">
+      <header className="flex items-center justify-between rounded-2xl border border-border bg-surface px-4 py-3">
         <div>
-          <p className="text-xs text-[var(--color-text-faint)]">
+          <p className="text-xs text-text-faint">
             Level {level} · {rankTitle}
           </p>
-          <div className="mt-1 h-1.5 w-28 overflow-hidden rounded-full bg-[var(--color-surface-2)]">
+          <div className="mt-1 h-1.5 w-28 overflow-hidden rounded-full bg-surface-2">
             <div
-              className="h-full rounded-full bg-[var(--color-accent)] transition-all"
+              className="h-full rounded-full bg-accent transition-all"
               style={{ width: `${progressPct}%` }}
             />
           </div>
-          <p className="mt-1 text-[10px] text-[var(--color-text-faint)]">
+          <p className="mt-1 text-[10px] text-text-faint">
             {xpIntoLevel} / {xpForNextLevel} XP
           </p>
         </div>
         <div className="flex items-center gap-3 text-right">
           {shieldCount > 0 && (
             <div>
-              <p className="text-xs text-[var(--color-text-faint)]">Shields</p>
-              <p className="text-sm font-semibold text-[var(--color-accent)]">{shieldCount}</p>
+              <p className="text-xs text-text-faint">Shields</p>
+              <p className="text-sm font-semibold text-accent">{shieldCount}</p>
             </div>
           )}
           <div>
-            <p className="text-xs text-[var(--color-text-faint)]">Streak</p>
-            <p className="text-xl font-bold text-[var(--color-celebration)]">
+            <p className="text-xs text-text-faint">Streak</p>
+            <p className="text-xl font-bold text-celebration">
               {streakWeeks}
-              <span className="text-xs font-medium text-[var(--color-text-faint)]"> wk</span>
+              <span className="text-xs font-medium text-text-faint"> wk</span>
             </p>
           </div>
         </div>
       </header>
 
-      <section className="rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
+      <section className="rounded-3xl border border-border bg-surface p-6">
         {recommendation ? (
           <>
-            <p className="text-sm text-[var(--color-text-muted)]">Next up</p>
-            <h1 className="mt-1 text-2xl font-semibold text-[var(--color-text)]">
+            <p className="text-sm text-text-muted">Next up</p>
+            <h1 className="mt-1 text-2xl font-semibold text-text">
               {DAY_TYPE_LABELS[recommendation.dayType]}
             </h1>
-            <p className="mt-2 text-sm text-[var(--color-text-muted)]">{recommendation.message}</p>
+            <p className="mt-2 text-sm text-text-muted">{recommendation.message}</p>
           </>
         ) : (
           <>
-            <p className="text-sm text-[var(--color-text-muted)]">Ready to train?</p>
-            <h1 className="mt-1 text-2xl font-semibold text-[var(--color-text)]">Log today&apos;s workout</h1>
+            <p className="text-sm text-text-muted">Ready to train?</p>
+            <h1 className="mt-1 text-2xl font-semibold text-text">Log today&apos;s workout</h1>
           </>
         )}
         <button
           type="button"
           onClick={() => navigate('/train')}
-          className="mt-5 w-full rounded-xl bg-[var(--color-accent)] py-3 text-sm font-semibold text-[var(--color-accent-foreground)] transition-colors hover:bg-[var(--color-accent-hover)]"
+          className="mt-5 w-full rounded-xl bg-accent py-3 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent-hover"
         >
           Start Workout
         </button>
@@ -96,18 +96,16 @@ export function HomePage() {
 
       <FriendsCard userId={userId} />
 
-      <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
-        <p className="text-xs font-medium text-[var(--color-text-faint)]">Today&apos;s quests</p>
+      <section className="rounded-2xl border border-border bg-surface p-4">
+        <p className="text-xs font-medium text-text-faint">Today&apos;s quests</p>
         <ul className="mt-2 flex flex-col gap-1.5">
           {getSessionQuestsForDayType(recommendation?.dayType ?? null).map((quest) => (
-            <li key={quest.id} className="text-sm text-[var(--color-text-muted)]">
+            <li key={quest.id} className="text-sm text-text-muted">
               • {quest.title}
             </li>
           ))}
         </ul>
-        <p className="mt-2 text-xs text-[var(--color-text-faint)]">
-          Start your workout to begin tracking these.
-        </p>
+        <p className="mt-2 text-xs text-text-faint">Start your workout to begin tracking these.</p>
       </section>
     </div>
   )

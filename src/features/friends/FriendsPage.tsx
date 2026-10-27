@@ -31,29 +31,32 @@ export function FriendsPage() {
         setEmail('')
       },
       onError: (err) => {
-        setFeedback({ kind: 'error', text: err instanceof Error ? err.message : 'Something went wrong.' })
+        setFeedback({
+          kind: 'error',
+          text: err instanceof Error ? err.message : 'Something went wrong.',
+        })
       },
     })
   }
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-xl font-semibold text-[var(--color-text)]">Friends</h1>
+      <h1 className="text-xl font-semibold text-text">Friends</h1>
 
-      <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
-        <p className="text-xs font-medium text-[var(--color-text-faint)]">Add a friend</p>
+      <section className="rounded-2xl border border-border bg-surface p-4">
+        <p className="text-xs font-medium text-text-faint">Add a friend</p>
         <form onSubmit={handleSendRequest} className="mt-2 flex gap-2">
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Their FitQuest email"
-            className="flex-1 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-2)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-faint)]"
+            className="flex-1 rounded-lg border border-border bg-surface-2 px-3 py-2 text-sm text-text placeholder:text-text-faint"
           />
           <button
             type="submit"
             disabled={sendRequest.isPending || !email.trim()}
-            className="rounded-lg bg-[var(--color-accent)] px-4 py-2 text-sm font-semibold text-[var(--color-accent-foreground)] disabled:opacity-40"
+            className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground disabled:opacity-40"
           >
             {sendRequest.isPending ? 'Sending...' : 'Add'}
           </button>
@@ -61,8 +64,7 @@ export function FriendsPage() {
         {feedback && (
           <p
             className={
-              'mt-2 text-xs ' +
-              (feedback.kind === 'error' ? 'text-[var(--color-danger)]' : 'text-[var(--color-success)]')
+              'mt-2 text-xs ' + (feedback.kind === 'error' ? 'text-danger' : 'text-success')
             }
           >
             {feedback.text}
@@ -72,26 +74,26 @@ export function FriendsPage() {
 
       {incomingRequests.length > 0 && (
         <section className="flex flex-col gap-3">
-          <p className="text-xs font-medium text-[var(--color-text-faint)]">Requests</p>
+          <p className="text-xs font-medium text-text-faint">Requests</p>
           <ul className="flex flex-col gap-2">
             {incomingRequests.map((entry) => (
               <li
                 key={entry.friendshipId}
-                className="flex items-center justify-between rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3"
+                className="flex items-center justify-between rounded-xl border border-border bg-surface p-3"
               >
-                <span className="text-sm text-[var(--color-text)]">{displayName(entry)}</span>
+                <span className="text-sm text-text">{displayName(entry)}</span>
                 <div className="flex gap-2">
                   <button
                     type="button"
                     onClick={() => acceptRequest.mutate(entry.friendshipId)}
-                    className="rounded-lg bg-[var(--color-accent)] px-3 py-1.5 text-xs font-semibold text-[var(--color-accent-foreground)]"
+                    className="rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-accent-foreground"
                   >
                     Accept
                   </button>
                   <button
                     type="button"
                     onClick={() => removeFriendship.mutate(entry.friendshipId)}
-                    className="rounded-lg border border-[var(--color-border)] px-3 py-1.5 text-xs text-[var(--color-text-muted)]"
+                    className="rounded-lg border border-border px-3 py-1.5 text-xs text-text-muted"
                   >
                     Decline
                   </button>
@@ -104,18 +106,18 @@ export function FriendsPage() {
 
       {outgoingRequests.length > 0 && (
         <section className="flex flex-col gap-3">
-          <p className="text-xs font-medium text-[var(--color-text-faint)]">Pending</p>
+          <p className="text-xs font-medium text-text-faint">Pending</p>
           <ul className="flex flex-col gap-2">
             {outgoingRequests.map((entry) => (
               <li
                 key={entry.friendshipId}
-                className="flex items-center justify-between rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3"
+                className="flex items-center justify-between rounded-xl border border-border bg-surface p-3"
               >
-                <span className="text-sm text-[var(--color-text)]">{displayName(entry)}</span>
+                <span className="text-sm text-text">{displayName(entry)}</span>
                 <button
                   type="button"
                   onClick={() => removeFriendship.mutate(entry.friendshipId)}
-                  className="rounded-lg border border-[var(--color-border)] px-3 py-1.5 text-xs text-[var(--color-text-muted)]"
+                  className="rounded-lg border border-border px-3 py-1.5 text-xs text-text-muted"
                 >
                   Cancel
                 </button>
@@ -126,9 +128,9 @@ export function FriendsPage() {
       )}
 
       <section className="flex flex-col gap-3">
-        <p className="text-xs font-medium text-[var(--color-text-faint)]">Your friends</p>
+        <p className="text-xs font-medium text-text-faint">Your friends</p>
         {friends.length === 0 ? (
-          <p className="text-sm text-[var(--color-text-muted)]">
+          <p className="text-sm text-text-muted">
             Nobody yet — send a request above to get started.
           </p>
         ) : (
@@ -139,18 +141,18 @@ export function FriendsPage() {
               return (
                 <li
                   key={entry.friendshipId}
-                  className="flex items-center justify-between rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3"
+                  className="flex items-center justify-between rounded-xl border border-border bg-surface p-3"
                 >
                   <div>
-                    <p className="text-sm font-medium text-[var(--color-text)]">{displayName(entry)}</p>
-                    <p className="text-xs text-[var(--color-text-faint)]">
+                    <p className="text-sm font-medium text-text">{displayName(entry)}</p>
+                    <p className="text-xs text-text-faint">
                       Level {level} · {streakWeeks} wk streak
                     </p>
                   </div>
                   <button
                     type="button"
                     onClick={() => removeFriendship.mutate(entry.friendshipId)}
-                    className="rounded-lg border border-[var(--color-border)] px-3 py-1.5 text-xs text-[var(--color-text-muted)]"
+                    className="rounded-lg border border-border px-3 py-1.5 text-xs text-text-muted"
                   >
                     Remove
                   </button>
